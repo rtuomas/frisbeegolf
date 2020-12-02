@@ -8,24 +8,21 @@ const bcrypt = require('bcryptjs');
 const util = require('util');
 const cors = require('cors');
 
-//Joonaksen tekemät lisäykset ja muutokset alkaa:
+
 const url = require('url');
 
 
 
-
+/*
 //Tuomaksen yhteys
-
 const con = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'rootPass',
     database: 'frisbee'
 });
+ */
 
-const query = util.promisify(con.query).bind(con);
-
- /*
 //Joonaksen yhteys:
 const con = mysql.createConnection({
     host: "localhost",
@@ -33,7 +30,9 @@ const con = mysql.createConnection({
     password: "olso",
     database: "frisbee"
 });
-*/
+
+
+const query = util.promisify(con.query).bind(con);
 
 con.connect( err => {
     err?console.log(err):console.log("Connected to database!");
@@ -176,6 +175,7 @@ app.get('/', (req, res) => {
 
 //----------------------------------------------------------------
 
+//Joonaksen tekemät lisäykset ja muutokset alkaa:
 //Kartta-sivun polku ja linkkaus sivustoon
 app.get("/kartta", function (req, res){
     res.sendFile(path.join(__dirname+'/views/kartta.html'));
