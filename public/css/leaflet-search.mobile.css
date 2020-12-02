@@ -1,4 +1,7 @@
-
+#map {
+	width: 100%;
+	height: 800px;
+}
 /* SEARCH */
 .leaflet-control.leaflet-control-search {
 	z-index:2000;
