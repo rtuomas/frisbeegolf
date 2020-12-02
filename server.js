@@ -6,17 +6,26 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const util = require('util');
+const cors = require('cors');
 
-/*
+//Joonaksen tekemät lisäykset ja muutokset alkaa:
+const url = require('url');
+
+
+
+
 //Tuomaksen yhteys
+
 const con = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'rootPass',
-    database: 'nodelogin'
+    database: 'frisbee'
 });
- */
 
+const query = util.promisify(con.query).bind(con);
+
+ /*
 //Joonaksen yhteys:
 const con = mysql.createConnection({
     host: "localhost",
@@ -24,6 +33,7 @@ const con = mysql.createConnection({
     password: "olso",
     database: "frisbee"
 });
+*/
 
 con.connect( err => {
     err?console.log(err):console.log("Connected to database!");
@@ -31,6 +41,8 @@ con.connect( err => {
 
 
 const app = express();
+app.use(cors());
+
 /*
 app.set('view engine', 'pug');
 app.set('views','./views');
@@ -138,6 +150,8 @@ app.get('/', (req, res) => {
 
  });
 
+ 
+
  app.post('/logout', (req, res) => {
     req.session.loggedin = false;
     req.session.username = null;
@@ -145,10 +159,9 @@ app.get('/', (req, res) => {
  });
 
  app.get('/home', (req, res) => {
-     //res.render('test2');
      
 	if (req.session.loggedin) {
-        res.render('test2', {
+        res.render('homepage', {
             username: req.session.username
         });
         //res.send('Welcome back, ' + request.session.username + '!');
@@ -161,13 +174,11 @@ app.get('/', (req, res) => {
 	//response.end();
 });
 
- //Joonaksen tekemät lisäykset ja muutokset alkaa:
-const url = require('url');
-const query = util.promisify(con.query).bind(con);
+//----------------------------------------------------------------
 
 //Kartta-sivun polku ja linkkaus sivustoon
 app.get("/kartta", function (req, res){
-    res.sendFile(path.join(__dirname+'/kartta.html'));
+    res.sendFile(path.join(__dirname+'/views/kartta.html'));
 })
 
 //Tietokannasta frisbeegolfratojen kysely
@@ -177,7 +188,7 @@ app.get('/nouda', function (req, res) {
     let string;
     let sql;
     if (area.area!=='kaikki'){
-        sql="SELECT * FROM Locations WHERE area = ?";
+        sql="SELECT * FROM Locations WHERE location_area = ?";
     } else {
         sql="SELECT * FROM Locations";
     }
@@ -188,7 +199,7 @@ app.get('/nouda', function (req, res) {
             string = JSON.stringify(rows);
             alteredResult = '{"numOfRows":'+rows.length+',"rows":'+string+'}';
             //console.log(rows);
-            res.set('Access-Control-Allow-Origin', 'http://127.0.0.1:80'); //Ehkä tietoturvariski jos arvona *
+            res.set('Access-Control-Allow-Origin', '*'); //Ehkä tietoturvariski jos arvona *
             res.send(alteredResult);
 
         }

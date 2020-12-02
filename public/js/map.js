@@ -177,7 +177,7 @@ function makeQuery(area) {
 
                 if (json.rows[i].latitude!==0&&json.rows[i].longitude!==0){
                     crd = {latitude: json.rows[i].latitude, longitude: json.rows[i].longitude};
-                    teksti = json.rows[i].name;
+                    teksti = json.rows[i].location_name;
                     const markkeri = L.marker([crd.latitude, crd.longitude], {title: teksti, icon: koriIcon}).bindPopup(teksti+'<br>'+crd.latitude+' '+crd.longitude).openPopup().on('click', function () {
                     });
                     searchLayer.addLayer(markkeri);
