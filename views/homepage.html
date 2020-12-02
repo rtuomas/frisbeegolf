@@ -7,17 +7,15 @@
 </head>
 <body>
     <p>Homepage! Welcome, {{ username }}</p>
+    <div class="logout">
 
+        <input type="button" value="Logout" onclick="logout()"/>
 
-    <button id="logout" onclick="logout()">logout</button>
-
-    
-        <div class="logout">
         <form action="logout" method="POST">
             <input type="submit" value="Logout (toimiva)"/>
         </form>
     </div>
-    
+
     <script src="/public/js/homepage.js"></script>
 </body>
 </html>

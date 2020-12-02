@@ -3,5 +3,7 @@
 console.log("test");
 
 function logout() {
-    console.log("test2");
+    let xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST", "http://localhost:80/logout", true);
+    xmlhttp.send();
 }

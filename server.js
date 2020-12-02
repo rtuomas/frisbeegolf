@@ -152,9 +152,11 @@ app.get('/', (req, res) => {
  
 
  app.post('/logout', (req, res) => {
-    req.session.loggedin = false;
+
+    req.session.loggedin = true;
     req.session.username = null;
     res.render('login_register');
+     console.log('Logout POST');
  });
 
  app.get('/home', (req, res) => {
