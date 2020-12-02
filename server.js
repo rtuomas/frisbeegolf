@@ -6,11 +6,23 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 
+/*
+//Tuomaksen yheys
 const con = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'rootPass',
     database: 'nodelogin'
+});
+
+ */
+
+//Joonaksen yhteys:
+const con = mysql.createConnection({
+    host: "localhost",
+    user: "olso",
+    password: "olso",
+    database: "frisbee"
 });
 
 con.connect( err => {
