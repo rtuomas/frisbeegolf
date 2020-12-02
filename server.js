@@ -5,16 +5,16 @@ const cons = require('consolidate');
 const bodyParser = require('body-parser');
 const path = require('path');
 const bcrypt = require('bcryptjs');
+const util = require('util');
 
 /*
-//Tuomaksen yheys
+//Tuomaksen yhteys
 const con = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'rootPass',
     database: 'nodelogin'
 });
-
  */
 
 //Joonaksen yhteys:
@@ -50,7 +50,7 @@ app.use(session({
 }));
 
 app.use(express.static(__dirname + '/public'));
-
+app.use('/public', express.static(path.join(__dirname, "public")));
 
 app.get('/', (req, res) => {
     if (req.session.loggedin) {
@@ -161,5 +161,45 @@ app.get('/', (req, res) => {
 	//response.end();
 });
 
+ //Joonaksen tekemät lisäykset ja muutokset alkaa:
+const url = require('url');
+const query = util.promisify(con.query).bind(con);
+
+//Kartta-sivun polku ja linkkaus sivustoon
+app.get("/kartta", function (req, res){
+    res.sendFile(path.join(__dirname+'/kartta.html'));
+})
+
+//Tietokannasta frisbeegolfratojen kysely
+app.get('/nouda', function (req, res) {
+    let area = url.parse(req.url, true).query;
+    let alteredResult;
+    let string;
+    let sql;
+    if (area.area!=='kaikki'){
+        sql="SELECT * FROM Locations WHERE area = ?";
+    } else {
+        sql="SELECT * FROM Locations";
+    }
+
+    (async () => {
+        try {
+            const rows = await query(sql,[area.area]);
+            string = JSON.stringify(rows);
+            alteredResult = '{"numOfRows":'+rows.length+',"rows":'+string+'}';
+            //console.log(rows);
+            res.set('Access-Control-Allow-Origin', 'http://127.0.0.1:80'); //Ehkä tietoturvariski jos arvona *
+            res.send(alteredResult);
+
+        }
+        catch (err) {
+            console.log("Database error!"+ err);
+        }
+        finally {
+            //conn.end();
+        }
+    })()
+})
+//Joonaksen tekemät lisäykset päättyy.
 
 app.listen(80);

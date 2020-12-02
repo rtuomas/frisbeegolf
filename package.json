@@ -14,8 +14,10 @@
     "body-parser": "^1.19.0",
     "consolidate": "^0.16.0",
     "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "leaflet-search": "^2.9.9",
     "mysql": "^2.18.1",
     "pug": "^3.0.0",
     "swig": "^1.4.2"
