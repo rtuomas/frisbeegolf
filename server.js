@@ -158,6 +158,49 @@ app.get('/', (req, res) => {
     res.render('login_register');
  });
 
+
+ app.post('/changePassword', (req, res) => {
+
+    if(req.session.loggedin){
+        const username = req.session.username;
+
+        const sql = 'SELECT * FROM accounts WHERE username = ?';
+        con.query(sql, [username], async (error, results, fields) => {
+            if(results.length>0 && await bcrypt.compare(req.body.passwordCurrent, results[0].password)){
+                if(req.body.password1 === req.body.password2) {
+                    let hashedPass = await bcrypt.hash(req.body.password1, 8);
+
+                    const sql = "UPDATE accounts SET password = ? WHERE username = ?";
+                    con.query(sql, [hashedPass, username], async (error, results, fields) => {
+                        console.log("Password changed!");
+                        res.render('homepage', {
+                            warning: "Password is changed",
+                            username: req.session.username
+                        });
+                    });
+                } else {
+                    res.render('homepage', {
+                        warning: "Passwords don't match.",
+                        username: req.session.username
+                    });
+                }
+                
+
+            } else {
+                res.render('homepage', {
+                    warning: "Password is not correct",
+                    username: req.session.username
+                });
+            }
+        });
+    } else {
+        res.render('login_register', {
+            warning: "You have to login first!"
+        });
+    }
+     
+ });
+
  app.get('/home', (req, res) => {
      
 	if (req.session.loggedin) {
