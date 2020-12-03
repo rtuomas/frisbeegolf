@@ -115,6 +115,8 @@ app.get('/', (req, res) => {
             //------------------------------------------------------------------------------------
             const username = req.body.username;
             const password = req.body.password;
+
+
             if(username&&password) {
             const sql = 'SELECT * FROM accounts WHERE username = ?';
             con.query(sql, [username], async (error, results, fields) => {
@@ -152,10 +154,9 @@ app.get('/', (req, res) => {
  
 
  app.post('/logout', (req, res) => {
-
     req.session.loggedin = false;
     req.session.username = null;
-    res.render('login_register');
+    res.redirect('/');
  });
 
 
