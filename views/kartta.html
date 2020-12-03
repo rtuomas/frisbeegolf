@@ -15,8 +15,47 @@
     <link rel="stylesheet" href="public/css/leaflet-search.css" />
 </head>
 <body>
-<!-- Kartan varattu paikka-->
-<div id="map"></div>
+
+
+<div id="bottom-container">
+    <!-- Kartan varattu paikka-->
+    <div id="map"></div>
+    <div id="results">
+        <div id="overall-results">
+            <table class="overall-table">
+                <h2>Väylät</h2>
+                <tr>
+                  <th>Väylä 1</th>
+                  <th>Pituus</th>
+                  <th>Par</th>
+                </tr>
+                <tr>
+                  <td>Jill</td>
+                  <td>Smith</td>
+                  <td>50</td>
+                </tr>
+            </table>
+        </div>
+        <div id="own-results">
+            <table class="own-table">
+                <h2>Pelatut pelit</h2>
+                <tr>
+                  <th>Pvm</th>
+                  <th>tulod</th>
+                  <th>Points</th>
+                </tr>
+                <tr>
+                  <td>Jill</td>
+                  <td>Smith</td>
+                  <td>50</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+</div>
+
+
 
 <!-- kirjastot haetaan ennen omaa js-tiedostoa-->
 <!-- Sciptit on oltava tässä järjestyksessä-->

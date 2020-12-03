@@ -218,6 +218,15 @@ app.get('/', (req, res) => {
 	//response.end();
 });
 
+app.get('/results', function (req, res) {
+
+    const sql = 'SELECT * FROM results';
+    con.query(sql, async (error, results, fields) => {
+        res.send(results);
+    });
+
+});
+
 //----------------------------------------------------------------
 
 //Joonaksen tekemät lisäykset ja muutokset alkaa:

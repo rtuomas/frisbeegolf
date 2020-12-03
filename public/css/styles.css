@@ -2,3 +2,29 @@
 #warning {
     color: red;
 }
+
+#bottom-container {
+    display: flex;
+}
+
+#results {
+    margin: 30px;
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+  
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+.tables {
+    display: inline-block;
+    overflow-y: scroll;
+    max-height:200px;
+}
