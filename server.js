@@ -13,7 +13,7 @@ const url = require('url');
 
 
 
-/*
+
 //Tuomaksen yhteys
 const con = mysql.createConnection({
     host: 'localhost',
@@ -21,8 +21,8 @@ const con = mysql.createConnection({
     password: 'rootPass',
     database: 'frisbee'
 });
- */
 
+/*
 //Joonaksen yhteys:
 const con = mysql.createConnection({
     host: "localhost",
@@ -30,7 +30,7 @@ const con = mysql.createConnection({
     password: "olso",
     database: "frisbee"
 });
-
+ */
 
 const query = util.promisify(con.query).bind(con);
 
@@ -174,10 +174,14 @@ app.get('/', (req, res) => {
                     const sql = "UPDATE accounts SET password = ? WHERE username = ?";
                     con.query(sql, [hashedPass, username], async (error, results, fields) => {
                         console.log("Password changed!");
+                        res.redirect('home');
+                        /*
                         res.render('homepage', {
                             warning: "Password is changed",
                             username: req.session.username
                         });
+                        */
+                        
                     });
                 } else {
                     res.render('homepage', {
@@ -203,8 +207,8 @@ app.get('/', (req, res) => {
  });
 
  app.get('/home', (req, res) => {
-     
 	if (req.session.loggedin) {
+        
         res.render('homepage', {
             username: req.session.username
         });

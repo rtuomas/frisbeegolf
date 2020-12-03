@@ -8,6 +8,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.3/leaflet.css" rel="stylesheet">
     <link rel="stylesheet" href="public/css/leaflet-search.css" />
     <link rel="stylesheet" href="public/css/leaflet-search.css" />
+    <link rel="stylesheet" href="public/css/styles.css" />
 </head>
 <body>
 
@@ -20,20 +21,65 @@
         </form>
     </div>
 
-    <div class="password-change">
-        <p>Change password</p>
-        <form action="changePassword" method="POST">
-            <input type="password" name="passwordCurrent" placeholder="Current password" required>
-            <input type="password" name="password1" placeholder="New password" required>
-            <input type="password" name="password2" placeholder="New password again" required>
-            <input type="submit" value="Change">
-            <p id="warning">{{ warning }}</p>
-        </form>
+
+    <!-- Trigger/Open The Modal -->
+    <button id="myBtn">Settings</button>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Settings</h2>
+            </div>
+            <div class="modal-body">
+                <div class="password-change">
+                    <p>Change password</p>
+                    <form action="changePassword" method="POST">
+                        <input type="password" name="passwordCurrent" placeholder="Current password" required>
+                        <input type="password" name="password1" placeholder="New password" required>
+                        <input type="password" name="password2" placeholder="New password again" required>
+                        <input type="submit" value="Change">
+                        <p id="warning">{{ warning }}</p>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+
 
     
         <!-- Kartan varattu paikka-->
     <div id="map"></div>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Settings</h2>
+            </div>
+            <div class="modal-body">
+                <div class="password-change">
+                    <p>Change password</p>
+                    <form action="changePassword" method="POST">
+                        <input type="password" name="passwordCurrent" placeholder="Current password" required>
+                        <input type="password" name="password1" placeholder="New password" required>
+                        <input type="password" name="password2" placeholder="New password again" required>
+                        <input type="submit" value="Change">
+                        <p id="warning">{{ warning }}</p>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
 
     <!-- kirjastot haetaan ennen omaa js-tiedostoa-->
     <!-- Sciptit on oltava tässä järjestyksessä-->

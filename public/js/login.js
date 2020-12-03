@@ -10,8 +10,6 @@ function populateTable() {
             json = JSON.parse(xmlhttp.responseText);
 
 
-            console.log("results: ", json);
-
             //var table = document.getElementById('gable');
             json.forEach(obj => {
                 let tr = document.createElement('tr');
