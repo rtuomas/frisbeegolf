@@ -1,6 +1,6 @@
 /**
  * @author Joonas Soininen
- * @version 1.6
+ * @version 1.8
  *
  */
 
@@ -149,7 +149,7 @@ myLocation.addTo(map);
 function makeQuery() {
     const area = document.getElementById('valinta').value;
     searchLayer.clearLayers();
-    let crd, teksti;
+    let crd, trackName, trackID;
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
@@ -160,10 +160,10 @@ function makeQuery() {
 
                 if (json.rows[i].latitude!==0&&json.rows[i].longitude!==0){
                     crd = {latitude: json.rows[i].latitude, longitude: json.rows[i].longitude};
-                    teksti = json.rows[i].location_name;
-                    const trackMarker = L.marker([crd.latitude, crd.longitude], {title: teksti, icon: basketIcon}).bindPopup(teksti+'<br><input onclick="" type="button" value="Pelaa tämä" id="submit">').openPopup().on('click', function () {
-                    });
-                    searchLayer.addLayer(trackMarker);
+                    trackName = json.rows[i].location_name;
+                    trackID = json.rows[i].location_id;
+
+                    addTrack(crd, trackName, trackID);
                 }
             }
             map.setView([crd.latitude, crd.longitude], 10);
@@ -173,4 +173,35 @@ function makeQuery() {
     xmlhttp.send();
 }
 
+/**
+ * Functions adds frisbeegolf tracks to the map and uses crd for coordinates lat/long, trackName for the name of the track and trackID to identify the track and usage on other functions
+ * @param crd
+ * @param trackName
+ * @param trackID
+ */
+function addTrack(crd, trackName, trackID) {
+    const markkeri = L.marker([crd.latitude, crd.longitude], {title: trackName, icon: basketIcon}).bindPopup(trackName+'<br>'+trackID+'<br><input onclick="playTrack('+trackID+')" type="button" value="Näytä radat" trackID="submit">').openPopup().on('click', function () {
+        console.log("RATAICON Väylä ID: "+trackID);
+    });
+    searchLayer.addLayer(markkeri);
+}
+
+/**
+ * Function is used to activate scoreboard for the user and use the already existing trackID to connect result to the right track.
+ * @param trackID
+ */
+//TODO Scoreboard and input to the database
+function playTrack(trackID){
+    console.log("NAPPI Väylä ID: "+trackID);
+    let xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+            json = JSON.parse(xmlhttp.responseText);
+            console.log("map User ID: "+json.id);
+            console.log("map User: "+json.user);
+        }
+    };
+    xmlhttp.open("GET", "http://127.0.0.1:80/user/username", true);
+    xmlhttp.send();
+}
 

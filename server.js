@@ -11,7 +11,7 @@ const cors = require('cors');
 
 const url = require('url');
 
-
+let user, userID;
 
 
 //Tuomaksen yhteys
@@ -22,6 +22,7 @@ const con = mysql.createConnection({
     database: 'frisbee'
 });
 
+
 /*
 //Joonaksen yhteys:
 const con = mysql.createConnection({
@@ -30,7 +31,7 @@ const con = mysql.createConnection({
     password: "olso",
     database: "frisbee"
 });
- */
+*/
 
 const query = util.promisify(con.query).bind(con);
 
@@ -86,6 +87,8 @@ app.get('/', (req, res) => {
         const sql = 'SELECT * FROM accounts WHERE username = ?';
         con.query(sql, [username], async (error, results, fields) => {
             if(results.length>0 && await bcrypt.compare(password, results[0].password)){
+                user = results[0].username;
+                userID = results[0].id;
                 req.session.loggedin = true;
                 req.session.username = username;
                 res.redirect('/home');
@@ -268,6 +271,12 @@ app.get('/nouda', function (req, res) {
             //conn.end();
         }
     })()
+})
+
+//Käyttäjän nimi ja userID map.js:n
+app.get("/user/username", function (req, res){
+    let string={id: userID, user: user};
+    res.send(string);
 })
 //Joonaksen tekemät lisäykset päättyy.
 
