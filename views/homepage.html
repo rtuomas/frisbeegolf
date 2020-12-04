@@ -52,9 +52,23 @@
 
 
 
-    
+
+    <div id="bottom-container">
         <!-- Kartan varattu paikka-->
-    <div id="map"></div>
+        <div id="map"></div>
+    <!-- KESKERÄINEN, ei haittaa muuta käyttöä-->
+        <div id="oncourse">
+            <h2>Rata</h2>
+            <label>Väylä
+                <input type="text" id="Heitot" placeholder="Heitot" autofocus />
+            </label>
+            <label>PAR
+                <input type="text" id="PAR" placeholder="PAR"/>
+            </label>
+            <p><button>Lisää</button></p>
+            <table id="list">
+            </table>
+        </div>
 
     <!-- The Modal -->
     <div id="myModal" class="modal">

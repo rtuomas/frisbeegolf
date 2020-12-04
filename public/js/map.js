@@ -180,7 +180,8 @@ function makeQuery() {
  * @param trackID
  */
 function addTrack(crd, trackName, trackID) {
-    const markkeri = L.marker([crd.latitude, crd.longitude], {title: trackName, icon: basketIcon}).bindPopup(trackName+'<br>'+trackID+'<br><input onclick="playTrack('+trackID+')" type="button" value="Näytä radat" trackID="submit">').openPopup().on('click', function () {
+
+    const markkeri = L.marker([crd.latitude, crd.longitude], {title: trackName, icon: basketIcon}).bindPopup(trackName+'<br>'+trackID+'<br><input onclick="playTrack('+trackID+')" type="button" value="Näytä radat" id="submit">').openPopup().on('click', function () {
         console.log("RATAICON Väylä ID: "+trackID);
     });
     searchLayer.addLayer(markkeri);
@@ -203,5 +204,48 @@ function playTrack(trackID){
     };
     xmlhttp.open("GET", "http://127.0.0.1:80/user/username", true);
     xmlhttp.send();
+
+
 }
 
+//TODO Make this functioning! All below!!
+let notes = [];
+let courseID=0;
+
+document.querySelector('#oncourse button').onclick = function() {
+    console.log('add note');
+    const throws = document.querySelector('#Heitot').value;
+    const PAR = document.querySelector('#PAR').value;
+    console.log(courseID);
+    const updated = {CourseID: courseID, Throws: throws, note: PAR};
+    console.log(updated);
+    notes[courseID] = {CourseID: courseID, Throws: throws, note: PAR};
+    courseID++
+    console.log(notes);
+    document.querySelector('#Heitot').value = '';
+    document.querySelector('#PAR').value = '';
+    loadList();
+};
+
+function displayList(element) {
+    console.log('display');
+    console.log(element.parentNode.parentNode.id);
+    var details = document.getElementById('details');
+    var id = element.parentNode.parentNode.id;
+    document.querySelector('#editPage input').value = notes[id].title;
+    document.querySelector('#editPage textarea').value = notes[id].note;
+    document.querySelector('#editPage p').innerHTML = id;
+}
+
+function loadList() {
+    const table = document.getElementById('list');
+    table.innerHTML = '';
+    for (let i=0; i<notes.length; i++) {
+        const row = document.createElement('tr');
+        row.id = i;
+        row.innerHTML = '<td><a onclick="displayList(this)" href="#">'+notes[i].CourseID+'</a></td>' +
+            '<td><a onclick="updateNote(this)" class="update" href="#">update</a></td>' +
+            '<td><a onclick="rem(this)" class="delete" href="#">delete</a></td>';
+        table.appendChild(row);
+    }
+}
