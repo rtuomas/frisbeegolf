@@ -181,7 +181,7 @@ function makeQuery() {
  */
 function addTrack(crd, trackName, trackID) {
 
-    const markkeri = L.marker([crd.latitude, crd.longitude], {title: trackName, icon: basketIcon}).bindPopup(trackName+'<br>'+trackID+'<br><input onclick="playTrack('+trackID+')" type="button" value="Näytä radat" id="submit">').openPopup().on('click', function () {
+    const markkeri = L.marker([crd.latitude, crd.longitude], {title: trackName, icon: basketIcon}).bindPopup(trackName+'<br>'+trackID+'<br><input onclick="playTrack('+trackID+')" type="button" value="Pelaa tämä" id="submit">').openPopup().on('click', function () {
         console.log("RATAICON Väylä ID: "+trackID);
     });
     searchLayer.addLayer(markkeri);
@@ -204,24 +204,22 @@ function playTrack(trackID){
     };
     xmlhttp.open("GET", "http://127.0.0.1:80/user/username", true);
     xmlhttp.send();
-
-
 }
 
 //TODO Make this functioning! All below!!
-let notes = [];
-let courseID=0;
+let results = [];
+let courseID=1;
 
 document.querySelector('#oncourse button').onclick = function() {
     console.log('add note');
     const throws = document.querySelector('#Heitot').value;
     const PAR = document.querySelector('#PAR').value;
     console.log(courseID);
-    const updated = {CourseID: courseID, Throws: throws, note: PAR};
+    const updated = {CourseID: courseID, Throws: throws, PAR: PAR};
     console.log(updated);
-    notes[courseID] = {CourseID: courseID, Throws: throws, note: PAR};
+    results[courseID] = {CourseID: courseID, Throws: throws, PAR: PAR};
     courseID++
-    console.log(notes);
+    console.log(results);
     document.querySelector('#Heitot').value = '';
     document.querySelector('#PAR').value = '';
     loadList();
@@ -232,20 +230,42 @@ function displayList(element) {
     console.log(element.parentNode.parentNode.id);
     var details = document.getElementById('details');
     var id = element.parentNode.parentNode.id;
-    document.querySelector('#editPage input').value = notes[id].title;
-    document.querySelector('#editPage textarea').value = notes[id].note;
+    document.querySelector('#editPage input').value = results[id].title;
+    document.querySelector('#editPage textarea').value = results[id].note;
     document.querySelector('#editPage p').innerHTML = id;
 }
 
 function loadList() {
     const table = document.getElementById('list');
+    const rowHead = document.createElement('tr');
+
     table.innerHTML = '';
-    for (let i=0; i<notes.length; i++) {
+    rowHead.innerHTML='<tr><th>Pelatut</th><th>Heitot</th><th>PAR</th></tr>';
+    table.appendChild(rowHead);
+    for (let i=1; i<results.length; i++) {
         const row = document.createElement('tr');
         row.id = i;
-        row.innerHTML = '<td><a onclick="displayList(this)" href="#">'+notes[i].CourseID+'</a></td>' +
+        row.innerHTML = '<td><a>Väylä '+results[i].CourseID+'</a></td>' +
+            '<td><a>'+results[i].Throws+'</a></td>' +
+            '<td><a>'+results[i].PAR+'</a></td>' +
             '<td><a onclick="updateNote(this)" class="update" href="#">update</a></td>' +
             '<td><a onclick="rem(this)" class="delete" href="#">delete</a></td>';
         table.appendChild(row);
+    }
+}
+
+function rem(element) {
+    console.log('remove');
+    var id = element.parentNode.parentNode.id;
+    console.log(id);
+    results.splice(id, 1);
+    loadList();
+    var editId = parseInt(document.querySelector('#editPage p').innerHTML, 10);
+    console.log('id: '+id);
+    console.log('editId: '+editId);
+    if (id === editId) {
+        console.log('deleted document being edited!');
+        document.querySelector('#editPage input').value = '';
+        document.querySelector('#editPage textarea').value = '';
     }
 }
