@@ -1,6 +1,6 @@
 #map {
-    width: 800px;
-    height: 400px;
+    height:100%;
+    width:100%;
 }
 .leaflet-container .leaflet-control-search {
     position:relative;

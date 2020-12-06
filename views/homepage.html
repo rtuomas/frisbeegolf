@@ -12,17 +12,22 @@
 </head>
 <body>
 
-    <p>Homepage! Welcome, {{ username }}</p>
-
-    <div class="logout">
-        <input type="button" value="Logout" onclick="logout()"/>
-        <form action="logout" method="POST">
-        <input type="submit" value="Logout (toimiva)"/>
-        </form>
-    </div>
-
-    <!-- Trigger/Open The Modal -->
-    <button id="myBtn">Settings</button>
+    <nav>
+        <ul>
+            <li><p>Homepage! Welcome, {{ username }}</p></li>
+            <li>
+                 <div class="logout">
+                    <input type="button" value="Logout" onclick="logout()"/>
+                    <form action="logout" method="POST">
+                    <input type="submit" value="Logout (toimiva)"/>
+                    </form>
+                </div>
+            </li>
+            <!-- Trigger/Open The Modal -->
+            <li><button id="myBtn">Settings</button></li>
+        </ul>      
+    </nav>
+    
 
     <div id="bottom-container">
         <!-- Kartan varattu paikka-->
@@ -49,6 +54,7 @@
                 </div>
             </div>
         </div>
+    </div>
 
     <!-- The Modal -->
     <div id="myModal" class="modal">

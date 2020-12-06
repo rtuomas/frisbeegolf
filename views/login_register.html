@@ -9,7 +9,11 @@
 			<link rel="stylesheet" href="public/css/leaflet-search.css" />
 	</head>
 	<body>
-		<div class="login-form">
+
+
+		<!--
+
+<div class="login-form">
 			<h1>Login here</h1>
 			<form action="login" method="POST">
 				<input type="text" name="username" placeholder="Username" required>
@@ -28,14 +32,43 @@
 		</div>
 
 		<p id="warning">{{ warning }}</p>
+		-->
 
-		<p>{{ ip }}</p>
+		<nav>
+			<ul>
+				<li>
+					<div class="login-form">
+						<h1>Login here</h1>
+						<form action="login" method="POST">
+							<input type="text" name="username" placeholder="Username" required>
+							<input type="password" name="password" placeholder="Password" required>
+							<input type="submit" value="Log in">
+						</form>
+					</div>
+				</li>
+				<li><p id="warning">{{ warning }}</p></li>
+				
+				<li>
+					<div class="register-form">
+						<h1>Or register</h1>
+						<form action="register" method="POST">
+							<input type="text" name="username" placeholder="Username" required>
+							<input type="password" name="password" placeholder="Password" required>
+							<input type="submit" value="Register">
+						</form>
+					</div>
+				</li>
+			</ul>      
+		</nav>
+
+		
 
 		<div id="bottom-container">
 			<!-- Kartan varattu paikka-->
 			<div id="map"></div>
 
-			<div id="results">
+			<!--
+				<div id="results">
 				<table id="table">
 					<h2>Results</h2>
 						<tr>
@@ -44,7 +77,11 @@
 						  <th>result</th>
 						</tr>
 				</table>
+			-->	
 			</div>
+		</div>
+			
+			
 
 		<!-- kirjastot haetaan ennen omaa js-tiedostoa-->
 		<!-- Sciptit on oltava tässä järjestyksessä-->
