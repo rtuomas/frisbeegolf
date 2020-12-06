@@ -41,6 +41,16 @@ button {
   margin:5px;
 }
 
+#myBtn {
+  background: transparent;
+  border: none;
+}
+
+#settingsImg {
+  src: "../images/settings.png";
+  width: 20px;
+}
+
 ul {
   list-style-type: none;
   margin: 0;
