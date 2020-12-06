@@ -19,8 +19,9 @@ table {
   
 td, th {
     border: 1px solid #dddddd;
-    text-align: left;
+    text-align: center;
     padding: 8px;
+    width: 200px;
 }
 
 .tables {
@@ -29,6 +30,11 @@ td, th {
     max-height:200px;
 }
 
+#list {
+    display: block;
+    overflow-y: scroll;
+    max-height:400px;
+}
 
 body {font-family: Arial, Helvetica, sans-serif;}
 
@@ -77,7 +83,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
 }
 
 /* The Close Button */
-.close {
+.close, .closeResults {
   color: white;
   float: right;
   font-size: 28px;
@@ -85,7 +91,9 @@ body {font-family: Arial, Helvetica, sans-serif;}
 }
 
 .close:hover,
-.close:focus {
+.close:focus,
+.closeResults:hover,
+.closeResults:focus{
   color: #000;
   text-decoration: none;
   cursor: pointer;

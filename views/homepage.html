@@ -21,53 +21,33 @@
         </form>
     </div>
 
-
     <!-- Trigger/Open The Modal -->
     <button id="myBtn">Settings</button>
-
-    <!-- The Modal -->
-    <div id="myModal" class="modal">
-
-        <!-- Modal content -->
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close">&times;</span>
-                <h2>Settings</h2>
-            </div>
-            <div class="modal-body">
-                <div class="password-change">
-                    <p>Change password</p>
-                    <form action="changePassword" method="POST">
-                        <input type="password" name="passwordCurrent" placeholder="Current password" required>
-                        <input type="password" name="password1" placeholder="New password" required>
-                        <input type="password" name="password2" placeholder="New password again" required>
-                        <input type="submit" value="Change">
-                        <p id="warning">{{ warning }}</p>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-
-
 
     <div id="bottom-container">
         <!-- Kartan varattu paikka-->
         <div id="map"></div>
-    <!-- KESKERÄINEN, ei haittaa muuta käyttöä-->
-        <div id="oncourse">
-            <h2>Rata</h2>
-            <label>Heitot
-                <input type="text" id="Heitot" placeholder="Heitot" autofocus />
-            </label>
-            <label>PAR
-                <input type="text" id="PAR" placeholder="PAR"/>
-            </label>
-            <p><button>Lisää</button></p>
-            <table id="list">
-            </table>
+    <!-- KESKEN, ei haittaa muuta käyttöä-->
+        <div id="onCourse" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="closeResults">&times;</span>
+                    <h2 id="Rata"></h2>
+                    <h4 id="User"></h4>
+                </div>
+                <div class="modal-body">
+                    <label>Heitot
+                        <input type="text" id="Heitot" placeholder="Heitot" autofocus />
+                    </label>
+                    <label>PAR
+                        <input type="text" id="PAR" placeholder="PAR"/>
+                    </label>
+                    <input onclick="addResults()" type="button" value="Lisää" id="addResults"/>
+                    <table id="list">
+                    </table>
+                    <p id="saveResultButton"></p>
+                </div>
+            </div>
         </div>
 
     <!-- The Modal -->

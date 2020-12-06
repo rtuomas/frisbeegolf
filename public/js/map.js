@@ -1,6 +1,6 @@
 /**
  * @author Joonas Soininen
- * @version 1.8
+ * @version 1.9
  *
  */
 
@@ -181,58 +181,79 @@ function makeQuery() {
  */
 function addTrack(crd, trackName, trackID) {
 
-    const markkeri = L.marker([crd.latitude, crd.longitude], {title: trackName, icon: basketIcon}).bindPopup(trackName+'<br>'+trackID+'<br><input onclick="playTrack('+trackID+')" type="button" value="Pelaa tämä" id="submit">').openPopup().on('click', function () {
+    const markkeri = L.marker([crd.latitude, crd.longitude], {title: trackName, icon: basketIcon}).bindPopup(trackName+'<br>'+trackID+'<br><input type="button" onclick="playTrack('+trackID+',\''+trackName+'\')" value="Pelaa tämä" id="playTrack"/>').openPopup().on('click', function () {
+
         console.log("RATAICON Väylä ID: "+trackID);
+
     });
     searchLayer.addLayer(markkeri);
+
 }
 
 /**
  * Function is used to activate scoreboard for the user and use the already existing trackID to connect result to the right track.
  * @param trackID
  */
-//TODO Scoreboard and input to the database
-function playTrack(trackID){
+//TODO Scoreboard appearance not finished
+
+    // Get the modal
+const modalResults = document.getElementById("onCourse");
+
+// Get the <span> element that closes the modal
+const spanResults = document.getElementsByClassName("closeResults")[0];
+
+// When the user clicks on <span> (x), close the modal
+spanResults.onclick = function() {
+    modalResults.style.display = "none";
+}
+
+let results = [];
+let courseID=1;
+let trackIdentification, userIdentification;
+
+function playTrack(trackID, trackName){
+results.length=0;
+courseID=1;
+const list = document.getElementById('list').innerHTML='';
+    modalResults.style.display = "block";
+
     console.log("NAPPI Väylä ID: "+trackID);
+    console.log("NAPPI Väylä NIMI: "+trackName);
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             json = JSON.parse(xmlhttp.responseText);
             console.log("map User ID: "+json.id);
             console.log("map User: "+json.user);
-        }
+            const track = document.getElementById('Rata').innerHTML=trackName;
+            const user = document.getElementById('User').innerHTML='Pelaaja: '+json.user;
+            trackIdentification=trackID;
+            userIdentification=json.id;
+            results[0]={trackID: trackIdentification, userID: userIdentification};
+       }
     };
     xmlhttp.open("GET", "http://127.0.0.1:80/user/username", true);
     xmlhttp.send();
+
+
 }
 
 //TODO Make this functioning! All below!!
-let results = [];
-let courseID=1;
 
-document.querySelector('#oncourse button').onclick = function() {
+function addResults(){
     console.log('add note');
-    const throws = document.querySelector('#Heitot').value;
-    const PAR = document.querySelector('#PAR').value;
+    const throws = document.getElementById('Heitot').value;
+    const PAR = document.getElementById('PAR').value;
     console.log(courseID);
     const updated = {CourseID: courseID, Throws: throws, PAR: PAR};
     console.log(updated);
     results[courseID] = {CourseID: courseID, Throws: throws, PAR: PAR};
     courseID++
     console.log(results);
-    document.querySelector('#Heitot').value = '';
-    document.querySelector('#PAR').value = '';
+    document.getElementById('Heitot').value = '';
+    document.getElementById('PAR').value = '';
+    document.getElementById('saveResultButton').innerHTML='<input onclick="saveResults()" type="button" value="Tallenna tulokset tietokantaan" id="saveResults"/>';
     loadList();
-};
-
-function displayList(element) {
-    console.log('display');
-    console.log(element.parentNode.parentNode.id);
-    var details = document.getElementById('details');
-    var id = element.parentNode.parentNode.id;
-    document.querySelector('#editPage input').value = results[id].title;
-    document.querySelector('#editPage textarea').value = results[id].note;
-    document.querySelector('#editPage p').innerHTML = id;
 }
 
 function loadList() {
@@ -245,27 +266,70 @@ function loadList() {
     for (let i=1; i<results.length; i++) {
         const row = document.createElement('tr');
         row.id = i;
-        row.innerHTML = '<td><a>Väylä '+results[i].CourseID+'</a></td>' +
+        row.innerHTML = '<td><a onclick="updateResult(this)">Väylä '+results[i].CourseID+'</a></td>' +
             '<td><a>'+results[i].Throws+'</a></td>' +
             '<td><a>'+results[i].PAR+'</a></td>' +
-            '<td><a onclick="updateNote(this)" class="update" href="#">update</a></td>' +
-            '<td><a onclick="rem(this)" class="delete" href="#">delete</a></td>';
+            '<td><input onclick="updateResult(this)" type="button" value="Muokkaa" id="Muokkaa"></td>';
         table.appendChild(row);
     }
 }
 
-function rem(element) {
-    console.log('remove');
-    var id = element.parentNode.parentNode.id;
+function updateResult(element) {
+
+    console.log('update note');
+
+    const id = element.parentNode.parentNode.id;
+    const tr = document.getElementById(id);
     console.log(id);
-    results.splice(id, 1);
-    loadList();
-    var editId = parseInt(document.querySelector('#editPage p').innerHTML, 10);
-    console.log('id: '+id);
-    console.log('editId: '+editId);
-    if (id === editId) {
-        console.log('deleted document being edited!');
-        document.querySelector('#editPage input').value = '';
-        document.querySelector('#editPage textarea').value = '';
+
+    for (let i=1;i<results.length;i++){
+        const trList = document.getElementById(i);
+        trList.innerHTML='';
+        trList.innerHTML='<td><a>Väylä '+results[i].CourseID+'</a></td>' +
+            '<td><a>'+results[i].Throws+'</a></td>' +
+            '<td><a>'+results[i].PAR+'</a></td>';
     }
+    tr.innerHTML='';
+    tr.innerHTML='<td><a>Väylä '+results[id].CourseID+'</a></td>' +
+        '<td><a><input type="text" id="HeitotEDIT" placeholder="'+results[id].Throws+'" autofocus /></a></td>' +
+        '<td><a><input type="text" id="PAREDIT" placeholder="'+results[id].PAR+'"/></a></td>' +
+        '<td><input onclick="saveEdit(this)" type="button" value="Tallenna" id="Tallenna"></td>';
+}
+
+function saveEdit(elementID){
+
+    const id = elementID.parentNode.parentNode.id;
+    const throws = document.querySelector('#HeitotEDIT').value;
+    const PAR = document.querySelector('#PAREDIT').value;
+    const tr = document.getElementById(id);
+    console.log(id);
+    results[id] = {CourseID: id, Throws: throws, PAR: PAR};
+    tr.innerHTML='';
+    tr.innerHTML='<td><a>Väylä '+results[id].CourseID+'</a></td>' +
+        '<td><a>'+results[id].Throws+'</a></td>' +
+        '<td><a>'+results[id].PAR+'</a></td>' +
+        '<td><input onclick="updateResult(this)" type="button" value="Muokkaa" id="Muokkaa"></td>';
+
+    for (let i=1;i<results.length;i++){
+        const trList = document.getElementById(i);
+        trList.innerHTML='';
+        trList.innerHTML='<td><a onclick="updateResult(this)">Väylä '+results[i].CourseID+'</a></td>' +
+        '<td><a>'+results[i].Throws+'</a></td>' +
+        '<td><a>'+results[i].PAR+'</a></td>' +
+        '<td><input onclick="updateResult(this)" type="button" value="Muokkaa" id="Muokkaa"></td>';
+    }
+}
+
+function saveResults(){
+
+    let xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+            json = xmlhttp.responseText;
+            console.log(json);
+        }
+    };
+    xmlhttp.open("POST", "http://127.0.0.1:80/plays/trackresult", true);
+    xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlhttp.send(JSON.stringify(results));
 }

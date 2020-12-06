@@ -7,6 +7,7 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 const util = require('util');
 const cors = require('cors');
+const urlencodedParser = bodyParser.urlencoded({extended:false});
 
 
 const url = require('url');
@@ -279,6 +280,39 @@ app.get('/nouda', function (req, res) {
 app.get("/user/username", function (req, res){
     let string={id: userID, user: user};
     res.send(string);
+})
+
+//Tulosten tallentaminen tietokonataan
+//TODO Korjaa yhteys tietokantaa, että voi laittaa tyhjiä arvoja
+app.post("/plays/trackresult", urlencodedParser, function (req,res){
+    console.log("body: %j", req.body);
+    let jsonObj = req.body;
+    console.log(jsonObj[0].trackID+' '+jsonObj[0].userID+' '+jsonObj[1].Throws);
+    let values=[];
+
+    let trackIDE = jsonObj[0].trackID.toString();
+    let userIDE = jsonObj[0].userID.toString();
+
+        values=[[trackIDE], [userIDE]];
+
+        for(let i=1; i<jsonObj.length; i++){
+            values.push([jsonObj[i].Throws]);
+        }
+
+    console.log(values);
+
+    const sql = "INSERT INTO results (course_id, user_id, course1, course2, course3, course4, course5, course6, course7, course8, course9, course10) VALUES (?)";
+
+    (async () => {
+        try {
+            const result = await query(sql, [values]);
+            res.send("POST successful " + req.body);
+        } catch (err) {
+            console.log("Insertion into some (2) table was unsuccessful! " + err);
+            res.send("POST was not successful " + err);
+        }
+    })()
+
 })
 //Joonaksen tekemät lisäykset päättyy.
 
