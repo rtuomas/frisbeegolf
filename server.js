@@ -286,9 +286,7 @@ app.get("/user/username", function (req, res){
 })
 
 //Tulosten tallentaminen tietokonataan
-//TODO Korjaa yhteys tietokantaa, että voi laittaa tyhjiä arvoja,
-// PÄÄTÄKKÄÄ tietokannan rakenne
-// TEE TULOSTEN TULOSTUS!
+//TODO TEE TULOSTEN TULOSTUS!
 app.post("/plays/trackresult", urlencodedParser, function (req,res){
     console.log("body: %j", req.body);
     let jsonObj = req.body;
@@ -299,28 +297,22 @@ app.post("/plays/trackresult", urlencodedParser, function (req,res){
     let trackIDE = jsonObj[0].trackID.toString();
     let userIDE = jsonObj[0].userID.toString();
 
-        values=[[trackIDE], [userIDE]];
+        values=[[null], [trackIDE], [userIDE]];
 
-
-        for(let i=1; i<jsonObj.length; i++){
-            values.push([jsonObj[i].Throws]);
-        }
-
-
-    /*
-    for(let i=1; i<11; i++){
-        values.push([null]);
+    for(let i=1; i<jsonObj.length; i++){
+        values.push([jsonObj[i].Throws], [jsonObj[i].PAR]);
     }
 
-     */
+    for(let i=jsonObj.length; i<38-jsonObj.length; i++){
+        values.push([0]);
+    }
 
-    console.log(values);
+    //console.log(values);
 
-    const sql = "INSERT INTO results (course_id, user_id, course1, course2, course3, course4, course5, course6, course7, course8, course9, course10) VALUES (?)";
-    //const sql = "INSERT INTO testresults (testcourse, testuser, testcourse1, testcourse2, testcourse3, testcourse4, testcourse5) VALUES (?)";
+    const sqlquery = "INSERT INTO results VALUES (?)";
     (async () => {
         try {
-            const result = await query(sql, [values]);
+            const result = await query(sqlquery, [values]);
             res.send("Tulosten tallennus onnistui!");
         } catch (err) {
             console.log("Insertion into some (2) table was unsuccessful! " + err);
