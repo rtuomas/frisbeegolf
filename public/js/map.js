@@ -178,31 +178,41 @@ function makeQuery() {
  * @param trackName
  * @param trackID
  */
-//TODO Finish statement to add button on popups only when signed in
 function addTrack(crd, trackName, trackID) {
     let xmlhttp = new XMLHttpRequest();
-    let user;
+
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             json = JSON.parse(xmlhttp.responseText);
             //console.log("map User ID: "+json.id);
             //console.log("map User: "+json.user);
-            user = json;
-            console.log(user);
+            const user = json;
+            //console.log(user);
+
+            let trackMarker;
+
+            if (user.id==null||user.user==null){
+                trackMarker = L.marker([crd.latitude, crd.longitude], {
+                    title: trackName,
+                    icon: basketIcon
+                }).bindPopup(trackName).openPopup().on('click', function () {
+                    //console.log("RATAICON Väylä ID: " + trackID);
+                });
+            } else {
+                trackMarker = L.marker([crd.latitude, crd.longitude], {
+                    title: trackName,
+                    icon: basketIcon
+                }).bindPopup(trackName + '<br>'+ '<br><input type="button" onclick="playTrack(' + trackID + ',\'' + trackName + '\')" value="Pelaa tämä" id="playTrack"/>'
+                ).openPopup().on('click', function () {
+                    //console.log("RATAICON Väylä ID: " + trackID);
+                });
+            }
+            searchLayer.addLayer(trackMarker);
         }
     };
     xmlhttp.open("GET", "http://127.0.0.1:80/user/username", true);
     xmlhttp.send();
 
-    let markkeri;
-
-        markkeri = L.marker([crd.latitude, crd.longitude], {
-            title: trackName,
-            icon: basketIcon
-        }).bindPopup(trackName + '<br>' + trackID + '<br><input type="button" onclick="playTrack(' + trackID + ',\'' + trackName + '\')" value="Pelaa tämä" id="playTrack"/>').openPopup().on('click', function () {
-            //console.log("RATAICON Väylä ID: " + trackID);
-        });
-    searchLayer.addLayer(markkeri);
 }
 
 /**
@@ -358,6 +368,7 @@ function saveResults(){
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             json = xmlhttp.responseText;
+            alert(json);
             //console.log(json);
         }
     };

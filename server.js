@@ -12,7 +12,7 @@ const urlencodedParser = bodyParser.urlencoded({extended:false});
 
 const url = require('url');
 
-let user, userID;
+let user=null, userID=null;
 
 /*
 //Tuomaksen yhteys
@@ -279,6 +279,7 @@ app.get('/nouda', function (req, res) {
 //Käyttäjän nimi ja userID map.js:n
 app.get("/user/username", function (req, res){
     let string={id: userID, user: user};
+    //console.log(string);
     res.send(string);
 })
 
@@ -308,10 +309,10 @@ app.post("/plays/trackresult", urlencodedParser, function (req,res){
     (async () => {
         try {
             const result = await query(sql, [values]);
-            res.send("POST successful " + req.body);
+            res.send("Tulosten tallennus onnistui!");
         } catch (err) {
             console.log("Insertion into some (2) table was unsuccessful! " + err);
-            res.send("POST was not successful " + err);
+            res.send("Tallentaminen epäonnistui! Ota yhteys sivuston ylläpitoon");
         }
     })()
 
