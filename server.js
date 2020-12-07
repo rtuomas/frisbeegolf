@@ -295,19 +295,29 @@ app.post("/plays/trackresult", urlencodedParser, function (req,res){
     console.log(jsonObj[0].trackID+' '+jsonObj[0].userID+' '+jsonObj[1].Throws);
     let values=[];
 
+
     let trackIDE = jsonObj[0].trackID.toString();
     let userIDE = jsonObj[0].userID.toString();
 
         values=[[trackIDE], [userIDE]];
 
+
         for(let i=1; i<jsonObj.length; i++){
             values.push([jsonObj[i].Throws]);
         }
 
+
+    /*
+    for(let i=1; i<11; i++){
+        values.push([null]);
+    }
+
+     */
+
     console.log(values);
 
-    //const sql = "INSERT INTO results (course_id, user_id, course1, course2, course3, course4, course5, course6, course7, course8, course9, course10) VALUES (?)";
-    const sql = "INSERT INTO testresults (testcourse, testuser, testcourse1, testcourse2, testcourse3, testcourse4, testcourse5) VALUES (?)";
+    const sql = "INSERT INTO results (course_id, user_id, course1, course2, course3, course4, course5, course6, course7, course8, course9, course10) VALUES (?)";
+    //const sql = "INSERT INTO testresults (testcourse, testuser, testcourse1, testcourse2, testcourse3, testcourse4, testcourse5) VALUES (?)";
     (async () => {
         try {
             const result = await query(sql, [values]);

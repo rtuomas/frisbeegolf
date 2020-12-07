@@ -304,14 +304,18 @@ function loadList() {
     const rowHead = document.createElement('tr');
 
     table.innerHTML = '';
-    rowHead.innerHTML='<tr><th>Pelatut</th><th>Heitot</th><th>PAR</th></tr>';
+    rowHead.innerHTML='<tr><th>Pelatut</th><th>Heitot</th><th>PAR</th><th>Tulos</th></tr>';
     table.appendChild(rowHead);
     for (let i=1; i<results.length; i++) {
+        let heitot = results[i].Throws;
+        let PAR = results[i].PAR;
+        let tulos = heitot-PAR;
         const row = document.createElement('tr');
         row.id = i;
         row.innerHTML = '<td><a onclick="updateResult(this)">Väylä '+results[i].CourseID+'</a></td>' +
             '<td><a>'+results[i].Throws+'</a></td>' +
             '<td><a>'+results[i].PAR+'</a></td>' +
+            '<td><a>'+tulos+'</a></td>' +
             '<td><input onclick="updateResult(this)" type="button" value="Muokkaa" id="Muokkaa"></td>';
         table.appendChild(row);
     }
@@ -325,18 +329,25 @@ function updateResult(element) {
     const id = element.parentNode.parentNode.id;
     const tr = document.getElementById(id);
     //console.log(id);
-
+    const throwsOneRow = results[id].Throws;
+    const parOneRow = results[id].PAR;
+    const resultOneRow = throwsOneRow-parOneRow;
     for (let i=1;i<results.length;i++){
+        const throwsAllRows = results[i].Throws;
+        const parAllRows = results[i].PAR;
+        const resultAllRows = throwsAllRows-parAllRows;
         const trList = document.getElementById(i);
         trList.innerHTML='';
         trList.innerHTML='<td><a>Väylä '+results[i].CourseID+'</a></td>' +
             '<td><a>'+results[i].Throws+'</a></td>' +
-            '<td><a>'+results[i].PAR+'</a></td>';
+            '<td><a>'+results[i].PAR+'</a></td>'+
+            '<td><a>'+resultAllRows+'</a></td>';
     }
     tr.innerHTML='';
     tr.innerHTML='<td><a>Väylä '+results[id].CourseID+'</a></td>' +
-        '<td><a><input type="text" id="HeitotEDIT" placeholder="'+results[id].Throws+'" autofocus /></a></td>' +
-        '<td><a><input type="text" id="PAREDIT" placeholder="'+results[id].PAR+'"/></a></td>' +
+        '<td><input type="number" id="HeitotEDIT" placeholder="'+results[id].Throws+'" autofocus /></td>' +
+        '<td><input type="number" id="PAREDIT" placeholder="'+results[id].PAR+'"/></td>' +
+        '<td><a>'+resultOneRow+'</a></td>' +
         '<td><input onclick="saveEdit(this)" type="button" value="Tallenna" id="Tallenna"></td>';
 }
 
@@ -351,19 +362,27 @@ function saveEdit(elementID){
     const PAR = document.querySelector('#PAREDIT').value;
     const tr = document.getElementById(id);
     //console.log(id);
+    const throwsOneRow = results[id].Throws;
+    const parOneRow = results[id].PAR;
+    const resultOneRow = throwsOneRow-parOneRow;
     results[id] = {CourseID: id, Throws: throws, PAR: PAR};
     tr.innerHTML='';
     tr.innerHTML='<td><a>Väylä '+results[id].CourseID+'</a></td>' +
         '<td><a>'+results[id].Throws+'</a></td>' +
         '<td><a>'+results[id].PAR+'</a></td>' +
+        '<td><a>'+resultOneRow+'</a></td>' +
         '<td><input onclick="updateResult(this)" type="button" value="Muokkaa" id="Muokkaa"></td>';
 
     for (let i=1;i<results.length;i++){
+        const throwsAllRows = results[i].Throws;
+        const parAllRows = results[i].PAR;
+        const resultAllRows = throwsAllRows-parAllRows;
         const trList = document.getElementById(i);
         trList.innerHTML='';
         trList.innerHTML='<td><a onclick="updateResult(this)">Väylä '+results[i].CourseID+'</a></td>' +
         '<td><a>'+results[i].Throws+'</a></td>' +
         '<td><a>'+results[i].PAR+'</a></td>' +
+            '<td><a>'+resultAllRows+'</a></td>' +
         '<td><input onclick="updateResult(this)" type="button" value="Muokkaa" id="Muokkaa"></td>';
     }
 }
