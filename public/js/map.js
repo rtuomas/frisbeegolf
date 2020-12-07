@@ -238,6 +238,8 @@ spanResults.onclick = function() {
     modalResults.style.display = "none";
 }
 
+
+
 let results = [];
 let courseID=1;
 let trackIdentification, userIdentification;
@@ -253,6 +255,7 @@ function playTrack(trackID, trackName){
 results.length=0;
 courseID=1;
 document.getElementById('list').innerHTML='';
+
     modalResults.style.display = "block";
 
     //console.log("NAPPI Väylä ID: "+trackID);
@@ -268,6 +271,11 @@ document.getElementById('list').innerHTML='';
             trackIdentification=trackID;
             userIdentification=json.id;
             results[0]={trackID: trackIdentification, userID: userIdentification};
+            window.onclick = function(event) {
+                if (event.target === modalResults) {
+                    modalResults.style.display = "none";
+                }
+            }
        }
     };
     xmlhttp.open("GET", "http://127.0.0.1:80/user/username", true);
