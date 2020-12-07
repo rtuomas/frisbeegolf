@@ -283,7 +283,9 @@ app.get("/user/username", function (req, res){
 })
 
 //Tulosten tallentaminen tietokonataan
-//TODO Korjaa yhteys tietokantaa, että voi laittaa tyhjiä arvoja
+//TODO Korjaa yhteys tietokantaa, että voi laittaa tyhjiä arvoja,
+// PÄÄTÄKKÄÄ tietokannan rakenne
+// TEE TULOSTEN TULOSTUS!
 app.post("/plays/trackresult", urlencodedParser, function (req,res){
     console.log("body: %j", req.body);
     let jsonObj = req.body;
@@ -301,8 +303,8 @@ app.post("/plays/trackresult", urlencodedParser, function (req,res){
 
     console.log(values);
 
-    const sql = "INSERT INTO results (course_id, user_id, course1, course2, course3, course4, course5, course6, course7, course8, course9, course10) VALUES (?)";
-
+    //const sql = "INSERT INTO results (course_id, user_id, course1, course2, course3, course4, course5, course6, course7, course8, course9, course10) VALUES (?)";
+    const sql = "INSERT INTO testresults (testcourse, testuser, testcourse1, testcourse2, testcourse3, testcourse4, testcourse5) VALUES (?)";
     (async () => {
         try {
             const result = await query(sql, [values]);

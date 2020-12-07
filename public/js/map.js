@@ -32,8 +32,8 @@ const options = {
 function success(pos) {
     position = pos.coords;
     map.setView([position.latitude, position.longitude], 13);
-    console.log(`Latitude: ${position.latitude}`);
-    console.log(`Longitude: ${position.longitude}`);
+    //console.log(`Latitude: ${position.latitude}`);
+    //console.log(`Longitude: ${position.longitude}`);
 
     addMarker(position, 'Minä olen tässä');
 }
@@ -93,7 +93,7 @@ const legend = L.control({position: 'topleft'});
 legend.onAdd = function (map) {
     const div = L.DomUtil.create('div', 'area legend');
     div.innerHTML = '<select name="valinta" id="valinta">\n' +
-        '    <option value="empty" id="empty">Maakunnat:</option>\n' +
+        '    <option value="kaikki" id="empty">Kaikki radat</option>\n' +
         '    <option value="Ahvenanmaa" id="ahvenanmaa">Ahvenanmaa</option>\n' +
         '    <option value="Etelä-Karjala" id="etela-karjala">Etelä-Karjala</option>\n' +
         '    <option value="Etelä-Pohjanmaa" id="etela-pohjanmaa">Etelä-Pohjanmaa</option>\n' +
@@ -112,7 +112,6 @@ legend.onAdd = function (map) {
         '    <option value="Satakunta" id="satakunta">Satakunta</option>\n' +
         '    <option value="Uusimaa" id="uusimaa">Uusimaa</option>\n' +
         '    <option value="Varsinais-Suomi" id="varsinais-suomi">Varsinais-Suomi</option>\n' +
-        '    <option value="kaikki" id="kokosuomi">Kaikki radat</option>\n' +
         '</select>' +
         '<br><input onclick="makeQuery()" type="button" value="Näytä radat" id="submit">';
     div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
@@ -179,15 +178,31 @@ function makeQuery() {
  * @param trackName
  * @param trackID
  */
+//TODO Finish statement to add button on popups only when signed in
 function addTrack(crd, trackName, trackID) {
+    let xmlhttp = new XMLHttpRequest();
+    let user;
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+            json = JSON.parse(xmlhttp.responseText);
+            //console.log("map User ID: "+json.id);
+            //console.log("map User: "+json.user);
+            user = json;
+            console.log(user);
+        }
+    };
+    xmlhttp.open("GET", "http://127.0.0.1:80/user/username", true);
+    xmlhttp.send();
 
-    const markkeri = L.marker([crd.latitude, crd.longitude], {title: trackName, icon: basketIcon}).bindPopup(trackName+'<br>'+trackID+'<br><input type="button" onclick="playTrack('+trackID+',\''+trackName+'\')" value="Pelaa tämä" id="playTrack"/>').openPopup().on('click', function () {
+    let markkeri;
 
-        console.log("RATAICON Väylä ID: "+trackID);
-
-    });
+        markkeri = L.marker([crd.latitude, crd.longitude], {
+            title: trackName,
+            icon: basketIcon
+        }).bindPopup(trackName + '<br>' + trackID + '<br><input type="button" onclick="playTrack(' + trackID + ',\'' + trackName + '\')" value="Pelaa tämä" id="playTrack"/>').openPopup().on('click', function () {
+            //console.log("RATAICON Väylä ID: " + trackID);
+        });
     searchLayer.addLayer(markkeri);
-
 }
 
 /**
@@ -196,13 +211,9 @@ function addTrack(crd, trackName, trackID) {
  */
 //TODO Scoreboard appearance not finished
 
-    // Get the modal
 const modalResults = document.getElementById("onCourse");
-
-// Get the <span> element that closes the modal
 const spanResults = document.getElementsByClassName("closeResults")[0];
 
-// When the user clicks on <span> (x), close the modal
 spanResults.onclick = function() {
     modalResults.style.display = "none";
 }
@@ -211,22 +222,29 @@ let results = [];
 let courseID=1;
 let trackIdentification, userIdentification;
 
+/**
+ * Function is a waypoint in between and it connect to the server and fetches username and ID for the results to be matched to the right player.
+ * It also adds the data to the modal that popsup when the playTrack function activating button is pressed.
+ * tracID and trackName are passed to this function to be added to the results database later.
+ * @param trackID
+ * @param trackName
+ */
 function playTrack(trackID, trackName){
 results.length=0;
 courseID=1;
-const list = document.getElementById('list').innerHTML='';
+document.getElementById('list').innerHTML='';
     modalResults.style.display = "block";
 
-    console.log("NAPPI Väylä ID: "+trackID);
-    console.log("NAPPI Väylä NIMI: "+trackName);
+    //console.log("NAPPI Väylä ID: "+trackID);
+    //console.log("NAPPI Väylä NIMI: "+trackName);
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             json = JSON.parse(xmlhttp.responseText);
-            console.log("map User ID: "+json.id);
-            console.log("map User: "+json.user);
-            const track = document.getElementById('Rata').innerHTML=trackName;
-            const user = document.getElementById('User').innerHTML='Pelaaja: '+json.user;
+            //console.log("map User ID: "+json.id);
+            //console.log("map User: "+json.user);
+            document.getElementById('Rata').innerHTML=trackName;
+            document.getElementById('User').innerHTML='Pelaaja: '+json.user;
             trackIdentification=trackID;
             userIdentification=json.id;
             results[0]={trackID: trackIdentification, userID: userIdentification};
@@ -239,23 +257,28 @@ const list = document.getElementById('list').innerHTML='';
 }
 
 //TODO Make this functioning! All below!!
-
+/**
+ *
+ */
 function addResults(){
-    console.log('add note');
+    //console.log('add note');
     const throws = document.getElementById('Heitot').value;
     const PAR = document.getElementById('PAR').value;
-    console.log(courseID);
-    const updated = {CourseID: courseID, Throws: throws, PAR: PAR};
-    console.log(updated);
+    //console.log(courseID);
+    //const updated = {CourseID: courseID, Throws: throws, PAR: PAR};
+    //console.log(updated);
     results[courseID] = {CourseID: courseID, Throws: throws, PAR: PAR};
     courseID++
-    console.log(results);
+    //console.log(results);
     document.getElementById('Heitot').value = '';
     document.getElementById('PAR').value = '';
     document.getElementById('saveResultButton').innerHTML='<input onclick="saveResults()" type="button" value="Tallenna tulokset tietokantaan" id="saveResults"/>';
     loadList();
 }
 
+/**
+ *
+ */
 function loadList() {
     const table = document.getElementById('list');
     const rowHead = document.createElement('tr');
@@ -274,13 +297,14 @@ function loadList() {
     }
 }
 
+/**
+ * Function is used to update already set result to the local storage list and is handled the right id when called.
+ * @param element
+ */
 function updateResult(element) {
-
-    console.log('update note');
-
     const id = element.parentNode.parentNode.id;
     const tr = document.getElementById(id);
-    console.log(id);
+    //console.log(id);
 
     for (let i=1;i<results.length;i++){
         const trList = document.getElementById(i);
@@ -296,13 +320,17 @@ function updateResult(element) {
         '<td><input onclick="saveEdit(this)" type="button" value="Tallenna" id="Tallenna"></td>';
 }
 
+/**
+ * Function saves the edited list columns back to the list and is given the right id when called.
+ * @param elementID
+ */
 function saveEdit(elementID){
 
     const id = elementID.parentNode.parentNode.id;
     const throws = document.querySelector('#HeitotEDIT').value;
     const PAR = document.querySelector('#PAREDIT').value;
     const tr = document.getElementById(id);
-    console.log(id);
+    //console.log(id);
     results[id] = {CourseID: id, Throws: throws, PAR: PAR};
     tr.innerHTML='';
     tr.innerHTML='<td><a>Väylä '+results[id].CourseID+'</a></td>' +
@@ -320,13 +348,17 @@ function saveEdit(elementID){
     }
 }
 
+/**
+ *
+ */
 function saveResults(){
-
+    document.getElementById('list').innerHTML='';
+    document.getElementById('saveResultButton').innerHTML='';
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             json = xmlhttp.responseText;
-            console.log(json);
+            //console.log(json);
         }
     };
     xmlhttp.open("POST", "http://127.0.0.1:80/plays/trackresult", true);
