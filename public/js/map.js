@@ -9,6 +9,7 @@
 let json;
 let position = null;
 
+
 const map = L.map('map');
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -31,6 +32,7 @@ const options = {
  */
 function success(pos) {
     position = pos.coords;
+
     map.setView([position.latitude, position.longitude], 13);
     //console.log(`Latitude: ${position.latitude}`);
     //console.log(`Longitude: ${position.longitude}`);
@@ -195,10 +197,15 @@ function addTrack(crd, trackName, trackID) {
                 trackMarker = L.marker([crd.latitude, crd.longitude], {
                     title: trackName,
                     icon: basketIcon
-                }).bindPopup(trackName).openPopup().on('click', function () {
+                }).bindPopup(trackName + '<br><p style="color:red;">Kirjaudu sisälle pelataksesi</p>'
+                ).openPopup().on('click', function () {
                     //console.log("RATAICON Väylä ID: " + trackID);
                 });
+
             } else {
+
+
+
                 trackMarker = L.marker([crd.latitude, crd.longitude], {
                     title: trackName,
                     icon: basketIcon
@@ -206,6 +213,9 @@ function addTrack(crd, trackName, trackID) {
                 ).openPopup().on('click', function () {
                     //console.log("RATAICON Väylä ID: " + trackID);
                 });
+
+
+
             }
             searchLayer.addLayer(trackMarker);
         }

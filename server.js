@@ -162,6 +162,8 @@ app.get('/', (req, res) => {
  app.post('/logout', (req, res) => {
     req.session.loggedin = false;
     req.session.username = null;
+    user = null;
+    userID = null;
     res.redirect('/');
  });
 
