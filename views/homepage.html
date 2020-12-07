@@ -17,14 +17,21 @@
             <li><p>Homepage! Welcome, {{ username }}</p></li>
             <li style="float:right;">
                  <div class="logout">
-                    <input type="button" value="Logout" onclick="logout()"/>
+                    <!--<input type="button" value="Logout" onclick="logout()"/>-->
                     <form action="logout" method="POST">
-                    <input type="submit" value="Logout (toimiva)"/>
+                    <input id="log-out" type="image" src="/public/images/logout.png" width="50" height="50" value="Logout (toimiva)"/>
                     </form>
                 </div>
             </li>
             <!-- Trigger/Open The Modal -->
-            <li style="float:right;"><button id="myBtn"><img id="settingsImg"></button></li>
+            <!--
+                <li style="float:right;"><button id="myBtn"><img id="settingsImg"></button></li>
+            -->
+            <li style="float:right;">
+                <button  id="myBtn" type="submit" style="border: 0; background: transparent">
+                    <img src="/public/images/settings.png" width="50" height="50" alt="submit" />
+                </button>
+            </li>
         </ul>      
     </nav>
     
