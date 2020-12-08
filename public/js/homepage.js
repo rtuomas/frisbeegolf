@@ -77,12 +77,16 @@ function populateTable() {
               const trackPar = obj.par1+obj.par2+obj.par3+obj.par4+obj.par5+obj.par6+obj.par7+obj.par8+obj.par9+
               obj.par10+obj.par11+obj.par12+obj.par13+obj.par14+obj.par15+obj.par16+obj.par17+obj.par18;
               
+              const javaDate = new Date(obj.play_date);
+                const day = javaDate.getDate();
+                const month = javaDate.getMonth()+1;
+                const year = javaDate.getFullYear();
 
-
+                const playDate = day+'.'+month+'.'+year;
 
               let tr = document.createElement('tr');
               tr.innerHTML = 
-              '<td>' + obj.play_date + '</td>' +
+              '<td>' + playDate+ '</td>' +
               '<td>' + obj.location_id + '</td>' +
               '<td>' + trackPar + '</td>' +
               '<td>' + ownResult + '</td>';

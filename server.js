@@ -237,20 +237,55 @@ app.get('/', (req, res) => {
 
 
 app.get('/results', (req, res) => {
-    
+    let locations = [];
+    let alteredResults;
     //console.log(user+"  "+userID)
 
-    const sql = 'SELECT * FROM results WHERE account_id = ?';
+    let sql = 'SELECT * FROM results WHERE account_id = ?';
+/*
     con.query(sql, [userID], (error, results, fields) => {
-          //console.log(results);
-          
+
+          for (let i=0;i<results.length;i++){
+              //console.log(results[i].location_id);
+              locations.push([results[i].location_id]);
+          }
+            console.log(locations);
           res.send(results);
 
     });
-    /*
-        
-        
-        */
+*/
+
+// TODO Nimen yhdistäminen oikeaan ID:n
+    (async () => {
+        try {
+            const results = await query(sql, [userID]);
+            for (let i=0;i<results.length;i++){
+                //console.log(results[i].location_id);
+                locations.push(results[i].location_id);
+            }
+            //console.log(results[0].location_id);
+            console.log(locations.length);
+            sql = "SELECT location_name, location_id FROM locations WHERE location_id IN ("+locations+")";
+            const results2 = await query(sql);
+            //console.log(results2);
+            //alteredResults='{"playerResults":'+results+',"location":'+results2+'}';
+            //console.log(alteredResults);
+            const string1=JSON.stringify(results);
+            const string2=JSON.stringify(results2);
+            alteredResults={results, results2};
+
+            console.log(results.length);
+            console.log(results2.length);
+
+            res.send(results);
+        } catch (err) {
+            console.log("EI ONNISTU! " + err);
+            res.send(err);
+        }
+    })()
+
+
+
     
 
 
@@ -310,7 +345,7 @@ app.get("/user/username", function (req, res){
 app.post("/plays/trackresult", urlencodedParser, function (req,res){
     console.log("body: %j", req.body);
     let jsonObj = req.body;
-    console.log(jsonObj[0].trackID+' '+jsonObj[0].userID+' '+jsonObj[1].Throws);
+    //console.log(jsonObj[0].trackID+' '+jsonObj[0].userID+' '+jsonObj[1].Throws);
     let values=[];
     const date = new Date();
     const day = date.getDate();
