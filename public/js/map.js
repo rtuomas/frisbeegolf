@@ -1,6 +1,6 @@
 /**
  * @author Joonas Soininen
- * @version 2.2
+ * @version 2.3
  *
  */
 
@@ -84,7 +84,7 @@ const meIcon = L.icon({
  * @param teksti
  */
 function addMarker(crd, teksti) {
-    L.marker([crd.latitude, crd.longitude], {icon: meIcon}).addTo(map).bindPopup(teksti).openPopup().on('click', function () {
+    L.marker([crd.latitude, crd.longitude], {icon: meIcon}).addTo(map).bindPopup('<p class="iconText">'+teksti+'</p>').openPopup().on('click', function () {
     });
 }
 
@@ -197,7 +197,7 @@ function addTrack(crd, trackName, trackID) {
                 trackMarker = L.marker([crd.latitude, crd.longitude], {
                     title: trackName,
                     icon: basketIcon
-                }).bindPopup(trackName + '<br><p style="color:red;">Kirjaudu sisälle pelataksesi</p>'
+                }).bindPopup('<p class="iconText">'+trackName+'</p>' + '<p style="color:red;">Kirjaudu sisälle pelataksesi</p>'
                 ).openPopup().on('click', function () {
                     //console.log("RATAICON Väylä ID: " + trackID);
                 });
@@ -209,7 +209,7 @@ function addTrack(crd, trackName, trackID) {
                 trackMarker = L.marker([crd.latitude, crd.longitude], {
                     title: trackName,
                     icon: basketIcon
-                }).bindPopup(trackName + '<br>'+ '<br><input type="button" onclick="playTrack(' + trackID + ',\'' + trackName + '\')" value="Pelaa tämä" id="playTrack"/>'
+                }).bindPopup('<p class="iconText">'+trackName+'</p>'+ '<input type="button" onclick="playTrack(' + trackID + ',\'' + trackName + '\')" value="Pelaa tämä" id="playTrack"/>'
                 ).openPopup().on('click', function () {
                     //console.log("RATAICON Väylä ID: " + trackID);
                 });
