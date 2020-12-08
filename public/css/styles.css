@@ -94,7 +94,7 @@ td, th{
     max-height:200px;
 }
 
-#list #table {
+#list, #table {
     display: block;
     overflow-y: scroll;
     max-height:400px;
@@ -208,7 +208,7 @@ body, html {
 }
 
 /* The Close Button */
-.close, .closeResults, .closeResult{
+.close, .closeAddedResults, .closeResult{
   color: white;
   float: right;
   font-size: 28px;
@@ -217,8 +217,8 @@ body, html {
 
 .close:hover,
 .close:focus,
-.closeResults:hover,
-.closeResults:focus,
+.closeAddedResults:hover,
+.closeAddedResults:focus,
 .closeResult:hover,
 .closeResult:focus{
   color: #000;

@@ -232,10 +232,7 @@ function addTrack(crd, trackName, trackID) {
 //TODO Scoreboard appearance not finished
 
 const modalResults = document.getElementById("onCourse");
-const spanResults = document.getElementsByClassName("closeResults")[0];
-
-
-
+const spanResults = document.getElementsByClassName("closeAddedResults")[0];
 
 let results = [];
 let courseID=1;
