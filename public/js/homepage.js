@@ -1,7 +1,7 @@
 
 // Get the modal
 const modal = document.getElementById("myModal");
-const reultModal = document.getElementById("resultModal");
+const resultModal = document.getElementById("resultModal");
 
 // Get the button that opens the modal
 const btn = document.getElementById("myBtn");
@@ -9,7 +9,7 @@ const resultButton = document.getElementById("resultButton");
 
 // Get the <span> element that closes the modal
 const span = document.getElementsByClassName("close")[0];
-const span2 = document.getElementsByClassName("close")[0];
+const resultSpan = document.getElementsByClassName("closeResult")[0];
 
 // When the user clicks the button, open the modal 
 btn.onclick = function() {
@@ -26,7 +26,7 @@ resultButton.onclick = function() {
 span.onclick = function() {
   modal.style.display = "none";
 }
-span.onclick = function() {
+resultSpan.onclick = function() {
   resultModal.style.display = "none";
 }
 
@@ -52,7 +52,7 @@ function logout() {
 */
 
 
-const table = document.getElementById("table");
+//const table = document.getElementById("table");
 //onst results = document.getElementById("results");
 
 function populateTable() {

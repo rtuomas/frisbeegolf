@@ -101,7 +101,7 @@ body, html {
 }
 
 /* The Modal (background) */
-.modal {
+.modal, .modal-results{
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 2000; /* Sit on top */
@@ -145,7 +145,7 @@ body, html {
 }
 
 /* The Close Button */
-.close, .closeResults {
+.close, .closeResults, .closeResult{
   color: white;
   float: right;
   font-size: 28px;
@@ -155,7 +155,9 @@ body, html {
 .close:hover,
 .close:focus,
 .closeResults:hover,
-.closeResults:focus{
+.closeResults:focus,
+.closeResult:hover,
+.closeResult:focus{
   color: #000;
   text-decoration: none;
   cursor: pointer;
