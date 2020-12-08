@@ -232,8 +232,8 @@ app.get('/', (req, res) => {
 
 app.get('/results', function (req, res) {
 
-    const sql = 'SELECT * FROM results';
-    con.query(sql, async (error, results, fields) => {
+    const sql = 'SELECT * FROM results WHERE account_id = ?';
+    con.query(sql, [1], async (error, results, fields) => {
         res.send(results);
     });
 
