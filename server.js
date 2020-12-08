@@ -292,12 +292,18 @@ app.post("/plays/trackresult", urlencodedParser, function (req,res){
     let jsonObj = req.body;
     console.log(jsonObj[0].trackID+' '+jsonObj[0].userID+' '+jsonObj[1].Throws);
     let values=[];
+    const date = new Date();
+    const day = date.getDate();
+    const month = date.getMonth()+1;
+    const year = date.getFullYear();
+
+    const today = year+'-'+month+'-'+day;
 
 
     let trackIDE = jsonObj[0].trackID.toString();
     let userIDE = jsonObj[0].userID.toString();
 
-        values=[[null], [trackIDE], [userIDE]];
+        values=[[null], [trackIDE], [userIDE], [today]];
 
     for(let i=1; i<jsonObj.length; i++){
         if (jsonObj[i].Throws===''&&jsonObj[i].PAR!==''){
