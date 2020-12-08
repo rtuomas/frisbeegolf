@@ -1,6 +1,6 @@
 /**
  * @author Joonas Soininen
- * @version 1.9
+ * @version 2.2
  *
  */
 
@@ -234,9 +234,6 @@ function addTrack(crd, trackName, trackID) {
 const modalResults = document.getElementById("onCourse");
 const spanResults = document.getElementsByClassName("closeResults")[0];
 
-spanResults.onclick = function() {
-    modalResults.style.display = "none";
-}
 
 
 
@@ -275,6 +272,10 @@ document.getElementById('list').innerHTML='';
                 if (event.target === modalResults) {
                     modalResults.style.display = "none";
                 }
+                spanResults.onclick = function() {
+                    modalResults.style.display = "none";
+                }
+
             }
        }
     };
@@ -295,8 +296,12 @@ function addResults(){
     //console.log(courseID);
     //const updated = {CourseID: courseID, Throws: throws, PAR: PAR};
     //console.log(updated);
-    results[courseID] = {CourseID: courseID, Throws: throws, PAR: PAR};
-    courseID++
+    if (courseID===19){
+        alert("Ei voi syöttää enempää väyliä");
+    } else {
+        results[courseID] = {CourseID: courseID, Throws: throws, PAR: PAR};
+        courseID++
+    }
     //console.log(results);
     document.getElementById('Heitot').value = '';
     document.getElementById('PAR').value = '';

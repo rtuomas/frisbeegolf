@@ -14,7 +14,7 @@ const url = require('url');
 
 let user=null, userID=null;
 
-
+/*
 //Tuomaksen yhteys
 const con = mysql.createConnection({
     host: 'localhost',
@@ -22,7 +22,7 @@ const con = mysql.createConnection({
     password: 'rootPass',
     database: 'frisbee'
 });
-/*
+*/
  
 
 
@@ -34,7 +34,7 @@ const con = mysql.createConnection({
     password: "olso",
     database: "frisbee"
 });
-*/
+
 
 const query = util.promisify(con.query).bind(con);
 
@@ -300,14 +300,22 @@ app.post("/plays/trackresult", urlencodedParser, function (req,res){
         values=[[null], [trackIDE], [userIDE]];
 
     for(let i=1; i<jsonObj.length; i++){
-        values.push([jsonObj[i].Throws], [jsonObj[i].PAR]);
+        if (jsonObj[i].Throws===''&&jsonObj[i].PAR!==''){
+            values.push([0],[jsonObj[i].PAR]);
+        } else if (jsonObj[i].PAR===''&&jsonObj[i].Throws!==''){
+            values.push([jsonObj[i].Throws],[0]);
+        } else if (jsonObj[i].Throws===''&&jsonObj[i].PAR===''){
+            values.push([0],[0]);
+        } else {
+            values.push([jsonObj[i].Throws], [jsonObj[i].PAR]);
+        }
     }
 
     for(let i=jsonObj.length; i<38-jsonObj.length; i++){
         values.push([0]);
     }
 
-    //console.log(values);
+    console.log(values);
 
     const sqlquery = "INSERT INTO results VALUES (?)";
     (async () => {
