@@ -15,6 +15,7 @@
     <nav>
         <ul>
             <li><p>Homepage! Welcome, {{ username }}</p></li>
+            
             <li style="float:right;">
                  <div class="logout">
                     <!--<input type="button" value="Logout" onclick="logout()"/>-->
@@ -30,6 +31,11 @@
             <li style="float:right;">
                 <button  id="myBtn" type="submit" style="border: 0; background: transparent">
                     <img src="/public/images/settings.png" width="50" height="50" alt="submit" />
+                </button>
+            </li>
+            <li style="float:right;">
+                <button  id="resultButton" type="submit" style="border: 0; background: transparent">
+                    <img src="/public/images/results.png" width="50" height="50" alt="resultButton" />
                 </button>
             </li>
         </ul>      
@@ -65,7 +71,6 @@
 
     <!-- The Modal -->
     <div id="myModal" class="modal">
-
         <!-- Modal content -->
         <div class="modal-content">
             <div class="modal-header">
@@ -85,7 +90,29 @@
                 </div>
             </div>
         </div>
+    </div>
 
+    <div id="resultModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Omat tulokset</h2>
+            </div>
+            <div class="modal-body">
+
+                <div id="results">
+                    <table id="table">
+                            <tr>
+                              <th>id</th>
+                              <th>user</th>
+                              <th>result</th>
+                            </tr>
+                    </table>
+                </div>
+
+            </div>
+        </div>
     </div>
 
     <!-- kirjastot haetaan ennen omaa js-tiedostoa-->

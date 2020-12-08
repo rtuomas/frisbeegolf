@@ -9,6 +9,7 @@ function populateTable() {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             json = JSON.parse(xmlhttp.responseText);
 
+            console.log(json);
 
             //var table = document.getElementById('gable');
             json.forEach(obj => {

@@ -14,7 +14,7 @@ const url = require('url');
 
 let user=null, userID=null;
 
-/*
+
 //Tuomaksen yhteys
 const con = mysql.createConnection({
     host: 'localhost',
@@ -22,8 +22,8 @@ const con = mysql.createConnection({
     password: 'rootPass',
     database: 'frisbee'
 });
-
- */
+/*
+ 
 
 
 
@@ -34,7 +34,7 @@ const con = mysql.createConnection({
     password: "olso",
     database: "frisbee"
 });
-
+*/
 
 const query = util.promisify(con.query).bind(con);
 
