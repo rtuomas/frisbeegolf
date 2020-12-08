@@ -14,7 +14,7 @@ const url = require('url');
 
 let user=null, userID=null;
 
-/*
+
 //Tuomaksen yhteys
 const con = mysql.createConnection({
     host: 'localhost',
@@ -22,10 +22,10 @@ const con = mysql.createConnection({
     password: 'rootPass',
     database: 'frisbee'
 });
-*/
+
  
 
-
+/*
 
 //Joonaksen yhteys:
 const con = mysql.createConnection({
@@ -34,7 +34,7 @@ const con = mysql.createConnection({
     password: "olso",
     database: "frisbee"
 });
-
+*/
 
 const query = util.promisify(con.query).bind(con);
 
@@ -227,17 +227,35 @@ app.get('/', (req, res) => {
         });
     }
     
-	//response.end();
+    //response.end();
+    
+    
 });
 
-app.get('/results', function (req, res) {
+
+
+app.get('/results', (req, res) => {
+    
+    //console.log(user+"  "+userID)
 
     const sql = 'SELECT * FROM results WHERE account_id = ?';
-    con.query(sql, [1], async (error, results, fields) => {
-        res.send(results);
+    con.query(sql, [userID], (error, results, fields) => {
+          //console.log(results);
+          
+          res.send(results);
+
     });
+    /*
+        
+        
+        */
+    
+
+
 
 });
+
+
 
 //----------------------------------------------------------------
 

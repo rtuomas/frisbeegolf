@@ -16,8 +16,10 @@ btn.onclick = function() {
   modal.style.display = "block";
 }
 resultButton.onclick = function() {
-  console.log("TEST");
   resultModal.style.display = "block";
+
+  populateTable();
+
 }
 
 // When the user clicks on <span> (x), close the modal
@@ -51,6 +53,7 @@ function logout() {
 
 
 const table = document.getElementById("table");
+//onst results = document.getElementById("results");
 
 function populateTable() {
 
@@ -59,17 +62,37 @@ function populateTable() {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             json = JSON.parse(xmlhttp.responseText);
 
+            document.getElementById("table").innerHTML = 
+            `<tr>
+              <th>Päivämäärä</th>
+              <th>Rata</th>
+              <th>Rata Par</th>
+              <th>Oma tulos</th>
+            </tr>`;
 
+            /*
             //var table = document.getElementById('gable');
+            */
             json.forEach(obj => {
-                let tr = document.createElement('tr');
-                tr.innerHTML = 
-                '<td>' + obj.location_id + '</td>' +
-                '<td>' + obj.user_id + '</td>' +
-                '<td>' + obj.track_result + '</td>';
-                table.appendChild(tr);
+
+              const ownResult = obj.c1+obj.c2+obj.c3+obj.c4+obj.c5+obj.c6+obj.c7+obj.c8+obj.c9+
+              obj.c10+obj.c11+obj.c12+obj.c13+obj.c14+obj.c15+obj.c16+obj.c17+obj.c18;
+              const trackPar = obj.par1+obj.par2+obj.par3+obj.par4+obj.par5+obj.par6+obj.par7+obj.par8+obj.par9+
+              obj.par10+obj.par11+obj.par12+obj.par13+obj.par14+obj.par15+obj.par16+obj.par17+obj.par18;
+              
+
+
+
+              let tr = document.createElement('tr');
+              tr.innerHTML = 
+              '<td>' + obj.play_date + '</td>' +
+              '<td>' + obj.location_id + '</td>' +
+              '<td>' + trackPar + '</td>' +
+              '<td>' + ownResult + '</td>';
+              table.appendChild(tr);
+
+
             });
-    
         }
     };
 
@@ -78,4 +101,4 @@ function populateTable() {
 
 };
 
-populateTable();
+//populateTable();
