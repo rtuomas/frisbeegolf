@@ -55,6 +55,25 @@ input[type=button]:active {
     transform: translateY(4px);
 }
 
+#resultImage:hover, #settingsImage:hover, #log-out:hover {
+  display: inline-block;
+  font-size: 1px;
+  color: white;
+  animation: roll 3s infinite;
+  transform: rotate(30deg);
+  opacity: .7;
+}
+
+@keyframes roll {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
 .iconText{
     font-size: 16px;
     color: #3685b5;
@@ -163,9 +182,6 @@ h3 {
 #log-out {
   margin:5px;
 }
-
-
-
 
 
 body, html {
