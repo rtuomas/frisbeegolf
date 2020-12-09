@@ -14,7 +14,7 @@ const url = require('url');
 
 let user=null, userID=null;
 
-/*
+
 //Tuomaksen yhteys
 const con = mysql.createConnection({
     host: 'localhost',
@@ -24,11 +24,8 @@ const con = mysql.createConnection({
 });
 
 
- */
- 
 
-
-
+/*
 //Joonaksen yhteys:
 const con = mysql.createConnection({
     host: "localhost",
@@ -36,7 +33,7 @@ const con = mysql.createConnection({
     password: "olso",
     database: "frisbee"
 });
-
+*/
 
 const query = util.promisify(con.query).bind(con);
 
@@ -111,52 +108,35 @@ app.get('/', (req, res) => {
  });
 
  app.post('/register', (req, res) => {
-
-    
-    const sql = 'SELECT * FROM accounts WHERE ip = ?';
-    con.query(sql, [req.connection.remoteAddress], (error, results, fields) => {
-        if(!results.length>0){
-
-
-            //------------------------------------------------------------------------------------
-            //------------------------------------------------------------------------------------
-            //------------------------------------------------------------------------------------
-            const username = req.body.username;
-            const password = req.body.password;
-
-
-            if(username&&password) {
-            const sql = 'SELECT * FROM accounts WHERE username = ?';
-            con.query(sql, [username], async (error, results, fields) => {
-                if(results.length>0) {
-                    res.render('login_register', {
-                        warning: "Username already in use"
-                    });
-                } else {
-                    let hashedPass = await bcrypt.hash(password, 8);
-                    const sql = 'INSERT INTO accounts VALUES (?,?,?,?)';
-                    con.query(sql, [null,req.connection.remoteAddress,username,hashedPass], (error, results, fields) => {
+    const username = req.body.username;
+    const password = req.body.password;
+    if(username&&password){
+        const sql = 'SELECT * FROM accounts WHERE username = ?';
+        con.query(sql, [username], async (error, results1, fields) => {
+            if(results1.length>0){
+                res.render('login_register', {
+                    warning: "Username already in use"
+                });
+            } else {
+                let hashedPass = await bcrypt.hash(password, 8);
+                const sql = 'INSERT INTO accounts VALUES (?,?,?)';
+                con.query(sql, [null,username,hashedPass], (error, results2, fields) => {
+                    const sql = 'SELECT id FROM accounts WHERE username = ?';
+                    con.query(sql, [username], (error, results3, fields) => {
+                        user = username;
+                        userID = results3[0].id;
                         req.session.loggedin = true;
                         req.session.username = username;
                         res.redirect('/home');
                     });
-                }
-            });
-            //------------------------------------------------------------------------------------
-            //------------------------------------------------------------------------------------
-            //------------------------------------------------------------------------------------
-
-
-        }
-        } else {
-            res.render('login_register', {
-                warning: "You have already registered from that ip!"
-            });
-        }
-
-    });
-    
-
+                });
+            }
+        })
+    } else {
+        res.render('login_register', {
+            warning: "Pls fill username AND password fields"
+        });
+    }
  });
 
  

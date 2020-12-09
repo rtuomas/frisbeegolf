@@ -1,5 +1,6 @@
 'use strict';
 
+/*
 const table = document.getElementById("table");
 
 function populateTable() {
@@ -30,4 +31,5 @@ function populateTable() {
 };
 
 populateTable();
+*/
 
