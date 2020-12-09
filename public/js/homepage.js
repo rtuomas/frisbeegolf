@@ -171,6 +171,7 @@ for (let i=0;i<resultsAllCourses.length;i++){
 
                }
             }
+            break;
         }
     }
 
