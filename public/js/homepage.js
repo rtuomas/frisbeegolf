@@ -58,7 +58,6 @@ function populateTable() {
     xmlhttp.onreadystatechange = () => {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             json = JSON.parse(xmlhttp.responseText);
-
             document.getElementById("table").innerHTML = 
             `<tr>
               <th>Päivämäärä</th>
@@ -87,7 +86,7 @@ function populateTable() {
               let tr = document.createElement('tr');
               tr.innerHTML = 
               '<td>' + playDate+ '</td>' +
-              '<td>' + obj.location_id + '</td>' +
+              '<td>' + obj.location_name+ '</td>' +
               '<td>' + trackPar + '</td>' +
               '<td>' + ownResult + '</td>';
               table.appendChild(tr);

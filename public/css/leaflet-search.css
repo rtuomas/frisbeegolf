@@ -1,7 +1,4 @@
-#map {
-    height:100%;
-    width:100%;
-}
+
 .leaflet-container .leaflet-control-search {
     position:relative;
     float:left;

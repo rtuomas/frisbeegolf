@@ -1,3 +1,14 @@
+.map-wrapper {
+    position: relative;
+}
+
+#map {
+    position: absolute;
+    top: 70px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
 
 input[type=number]{
     font-size: 16px;
@@ -120,6 +131,7 @@ ul {
   padding: 0;
   overflow: hidden;
   background-color: #333333;
+    height: 70px;
   /*
   position: fixed;
   top: 0;
