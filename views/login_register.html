@@ -44,8 +44,8 @@
 					<div class="login-form">
 						<h3>Log in</h3>
 						<form action="login" method="POST">
-							<input type="text" name="username" placeholder="Username" required>
-							<input type="password" name="password" placeholder="Password" required>
+							<input class="requiredInput" type="text" name="username" placeholder="Username" required>
+							<input class="requiredInput" type="password" name="password" placeholder="Password" required>
 							<input type="submit" value="Log in">
 						</form>
 					</div>
@@ -57,8 +57,8 @@
 					<div class="register-form">
 						<h3>Sign up</h3>
 						<form action="register" method="POST">
-							<input type="text" name="username" placeholder="Username" pattern=".{2,}" required>
-							<input type="password" name="password" placeholder="Password" pattern=".{2,}" required>
+							<input class="requiredInput" type="text" name="username" placeholder="Username" pattern=".{2,}" required>
+							<input class="requiredInput" type="password" name="password" placeholder="Password" pattern=".{2,}" required>
 							<input type="submit" value="Register">
 						</form>
 					</div>
