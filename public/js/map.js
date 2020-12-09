@@ -1,23 +1,21 @@
 /**
  * @author Joonas Soininen
- * @version 2.3
+ * @version 2.5
  *
  */
-
 'use strict';
 
 let json;
 let position = null;
 
-
-let tumma = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', { //Määritettään eri karttakerroksille muuttujat ja karttojen lähteet
+let darkMap = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', { //Määritettään eri karttakerroksille muuttujat ja karttojen lähteet
         maxZoom: 20,
         attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
     }),
     osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }),
-    ilma = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    realMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
     }),
     hsl = L.tileLayer('https://cdn.digitransit.fi/map/v1/{id}/{z}/{x}/{y}.png', {
@@ -29,15 +27,18 @@ let tumma = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/
         id: 'hsl-map'});
 
 const map = L.map('map', { //Määritetään kartalle muttuja ja annetaan sille eri käytetttävät layerit
-    layers: [tumma, osm, ilma, hsl]
+    layers: [darkMap, osm, realMap, hsl]
 });
+
 let baseMaps = { //Tässä luodaan muttuja karttavalikolle
-    "Tumma": tumma,
-    "OSM": osm,
-    "Ilma": ilma,
-    "HSL": hsl
+    "Dark": darkMap,
+    "HSL": hsl,
+    "Air": realMap,
+    "OSM": osm
 };
+
 L.control.layers(baseMaps).addTo(map); //Tällä lisätään luotu karttamuuttuja itse kartalle
+
 /**
  * options for the map
  * @type {{enableHighAccuracy: boolean, maximumAge: number, timeout: number}}
@@ -59,7 +60,6 @@ function success(pos) {
     map.setView([position.latitude, position.longitude], 13);
     //console.log(`Latitude: ${position.latitude}`);
     //console.log(`Longitude: ${position.longitude}`);
-
     addMarker(position, 'Minä olen tässä');
 }
 
@@ -72,22 +72,14 @@ function error(err) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
 }
 
-/**
- *
- */
 const searchLayer = L.layerGroup().addTo(map);
 
 L.control.scale().addTo(map);
 
 map.zoomControl.setPosition('topright');
-/**
- *
- */
+
 navigator.geolocation.getCurrentPosition(success, error, options);
 
-/**
- *
- */
 const meIcon = L.icon({
     iconUrl: 'public/images/me.png',
     iconSize: [50,50],
@@ -107,13 +99,11 @@ const meIcon = L.icon({
  * @param teksti
  */
 function addMarker(crd, teksti) {
+    //crd={latitude:'60.171040', longitude:'24.941957'}; //Helsingin päärautatieasema
     L.marker([crd.latitude, crd.longitude], {icon: meIcon}).addTo(map).bindPopup('<p class="iconText">'+teksti+'</p>').openPopup().on('click', function () {
     });
 }
 
-/**
- *
- */
 const legend = L.control({position: 'topleft'});
 legend.onAdd = function (map) {
     const div = L.DomUtil.create('div', 'area legend');
@@ -152,9 +142,6 @@ map.addControl( new L.Control.Search({
     marker: false
 }) );
 
-/**
- *
- */
 const myLocation = L.control({position: 'bottomright'});
 myLocation.onAdd = function (map) {
     const div = L.DomUtil.create('div', 'oma_sijainti');
@@ -168,7 +155,6 @@ myLocation.addTo(map);
  * makeQuery-function is called when there is a need to go into the servers database. The function accesses the server
  * trough an xmlhttp-request and passes data to the server, in this case the chosen are where the frisbeegolf courses
  * are searched for.
- * @param area
  */
 function makeQuery() {
     const area = document.getElementById('valinta').value;
@@ -227,8 +213,6 @@ function addTrack(crd, trackName, trackID) {
 
             } else {
 
-
-
                 trackMarker = L.marker([crd.latitude, crd.longitude], {
                     title: trackName,
                     icon: basketIcon
@@ -236,8 +220,6 @@ function addTrack(crd, trackName, trackID) {
                 ).openPopup().on('click', function () {
                     //console.log("RATAICON Väylä ID: " + trackID);
                 });
-
-
 
             }
             searchLayer.addLayer(trackMarker);
@@ -248,15 +230,9 @@ function addTrack(crd, trackName, trackID) {
 
 }
 
-/**
- * Function is used to activate scoreboard for the user and use the already existing trackID to connect result to the right track.
- * @param trackID
- */
-//TODO Scoreboard appearance not finished
-
+//Tulostaulukon muuttujia
 const modalResults = document.getElementById("onCourse");
 const spanResults = document.getElementsByClassName("closeAddedResults")[0];
-
 let results = [];
 let courseID=1;
 let trackIdentification, userIdentification;
@@ -302,10 +278,8 @@ document.getElementById('list').innerHTML='';
     xmlhttp.open("GET", "http://127.0.0.1:80/user/username", true);
     xmlhttp.send();
 
-
 }
 
-//TODO Make this functioning! All below!!
 /**
  *
  */

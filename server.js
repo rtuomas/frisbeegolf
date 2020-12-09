@@ -15,7 +15,7 @@ const url = require('url');
 
 let user=null, userID=null;
 
-
+/*
 //Tuomaksen yhteys
 const con = mysql.createConnection({
     host: 'localhost',
@@ -24,9 +24,11 @@ const con = mysql.createConnection({
     database: 'frisbee'
 });
 
+ */
+
  
 
-/*
+
 //Joonaksen yhteys:
 const con = mysql.createConnection({
     host: "localhost",
@@ -34,7 +36,7 @@ const con = mysql.createConnection({
     password: "olso",
     database: "frisbee"
 });
-*/
+
 
 const query = util.promisify(con.query).bind(con);
 
@@ -249,12 +251,14 @@ app.get('/results', (req, res) => {
 //----------------------------------------------------------------
 
 //Joonaksen tekemät lisäykset ja muutokset alkaa:
-//Kartta-sivun polku ja linkkaus sivustoon
+//Kartta-sivun polku ja linkkaus sivustoon TURHA
 app.get("/kartta", function (req, res){
     res.sendFile(path.join(__dirname+'/views/kartta.html'));
 })
 
-//Tietokannasta frisbeegolfratojen kysely
+/**
+ * Connection to collect location and all other data for the frisbeegolf courses to map.js
+ */
 app.get('/nouda', function (req, res) {
     let area = url.parse(req.url, true).query;
     let alteredResult;
@@ -285,15 +289,18 @@ app.get('/nouda', function (req, res) {
     })()
 })
 
-//Käyttäjän nimi ja userID map.js:n
+/**
+ * Connection to pass the current username and id to the map.js
+ */
 app.get("/user/username", function (req, res){
     let string={id: userID, user: user};
     //console.log(string);
     res.send(string);
 })
 
-//Tulosten tallentaminen tietokonataan
-//TODO TEE TULOSTEN TULOSTUS!
+/**
+ * Post method to get all the player results to the database from the map.js
+ */
 app.post("/plays/trackresult", urlencodedParser, function (req,res){
     console.log("body: %j", req.body);
     let jsonObj = req.body;
@@ -303,9 +310,7 @@ app.post("/plays/trackresult", urlencodedParser, function (req,res){
     const day = date.getDate();
     const month = date.getMonth()+1;
     const year = date.getFullYear();
-
     const today = year+'-'+month+'-'+day;
-
 
     let trackIDE = jsonObj[0].trackID.toString();
     let userIDE = jsonObj[0].userID.toString();

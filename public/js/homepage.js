@@ -142,11 +142,11 @@ function populateTable() {
 
 function showMore(resultID){
 
-table.innerHTML='';
+    table.innerHTML='';
     const tr = document.createElement('tr');
     tr.innerHTML='<td><input onclick="populateTable()" type="button" value="Takaisin" id="Takaisin"></td>';
     table.appendChild(tr);
-for (let i=0;i<resultsAllCourses.length;i++){
+    for (let i=0;i<resultsAllCourses.length;i++){
         //console.log(resultsAllCourses[i].trackID);
         //console.log(resultsAllCourses[i].trackName);
         if (resultsAllCourses[i].resultID===resultID){
