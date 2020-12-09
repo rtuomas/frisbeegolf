@@ -77,12 +77,13 @@ function populateTable() {
             //var table = document.getElementById('gable');
             */
 
-            //console.log(json);
+            console.log(json);
 
 
             json.forEach(obj => {
 
                 resultsAllCourses [count]= {
+                    resultID: obj.result_id,
                     trackID: obj.location_id,
                     trackName: obj.location_name,
                     [1]: {course: obj.c1, par: obj.par1},
@@ -117,11 +118,11 @@ function populateTable() {
 
                   const playDate = day+'.'+month+'.'+year;
                   const trackName=obj.location_name;
-                  let trackID = obj.location_id;
+                  let resultID = obj.result_id;
                   let tr = document.createElement('tr');
                   tr.innerHTML =
                       '<td>' + playDate + '</td>' +
-                      '<td><input onclick="showMore('+trackID+')" type="button" value="' + trackName + '" id="Väylä"></td>' +
+                      '<td><input onclick="showMore('+resultID+')" type="button" value="' + trackName + '" id="Väylä"></td>' +
                       '<td>' + trackPar + '</td>' +
                       '<td>' + ownResult + '</td>';
                   table.appendChild(tr);
@@ -139,7 +140,7 @@ function populateTable() {
 
 //populateTable();
 
-function showMore(name){
+function showMore(resultID){
 
 table.innerHTML='';
     const tr = document.createElement('tr');
@@ -148,7 +149,7 @@ table.innerHTML='';
 for (let i=0;i<resultsAllCourses.length;i++){
         //console.log(resultsAllCourses[i].trackID);
         //console.log(resultsAllCourses[i].trackName);
-        if (resultsAllCourses[i].trackID===name){
+        if (resultsAllCourses[i].resultID===resultID){
             const tr = document.createElement('tr');
             tr.innerHTML='<td>'+resultsAllCourses[i].trackName+'</td>'+
                 '<td>PAR</td>'+
@@ -161,7 +162,7 @@ for (let i=0;i<resultsAllCourses.length;i++){
                     //console.log("Väylä "+j+" heitot: "+resultsAllCourses[i][j].course+" PAR: "+resultsAllCourses[i][j].par);
                     const throws = resultsAllCourses[i][j].course;
                     const par = resultsAllCourses[i][j].par;
-                    const equals = par-throws;
+                    const equals = throws-par;
                     tr.innerHTML= '<td>Väylä: '+j+'</td>'+
                         '<td>'+resultsAllCourses[i][j].par+'</td>'+
                     '<td>'+resultsAllCourses[i][j].course+'</td>'+
