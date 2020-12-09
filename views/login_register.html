@@ -35,10 +35,13 @@
 		-->
 
 		<nav>
+			
+			
+
 			<ul>
 				<li>
 					<div class="login-form">
-						<h3>Kirjaudu sisään</h3>
+						<h3>Log in</h3>
 						<form action="login" method="POST">
 							<input type="text" name="username" placeholder="Username" required>
 							<input type="password" name="password" placeholder="Password" required>
@@ -46,18 +49,24 @@
 						</form>
 					</div>
 				</li>
-				<li><p id="warning">{{ warning }}</p></li>
+				
+				
 				
 				<li>
 					<div class="register-form">
-						<h3>Rekisteröidy</h3>
+						<h3>Sign up</h3>
 						<form action="register" method="POST">
-							<input type="text" name="username" placeholder="Username" required>
-							<input type="password" name="password" placeholder="Password" required>
+							<input type="text" name="username" placeholder="Username" pattern=".{2,}" required>
+							<input type="password" name="password" placeholder="Password" pattern=".{2,}" required>
 							<input type="submit" value="Register">
 						</form>
 					</div>
 				</li>
+
+				
+				<li class="warning">{{ usernameError }}</li>
+				<li class="warning"> {{ passwordError }}</li>
+				<li class="warning">{{ warning }}</li>
 			</ul>      
 		</nav>
 

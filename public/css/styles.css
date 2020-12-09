@@ -55,6 +55,18 @@ input[type=button]:active {
     transform: translateY(4px);
 }
 
+
+
+input:invalid {
+  border: 2px dashed red;
+}
+
+input:valid {
+  border: 2px dashed green;
+}
+
+
+
 #resultImage:hover, #settingsImage:hover, #log-out:hover {
   display: inline-block;
   font-size: 1px;
@@ -89,7 +101,7 @@ select {
     background: #F7D6E0;
 }
 
-#warning {
+.warning {
     color: red;
 }
 
@@ -150,7 +162,9 @@ ul {
   padding: 0;
   overflow: hidden;
   background-color: #333333;
+  
     height: 70px;
+    
   /*
   position: fixed;
   top: 0;

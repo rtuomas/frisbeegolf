@@ -8,6 +8,7 @@ const bcrypt = require('bcryptjs');
 const util = require('util');
 const cors = require('cors');
 const urlencodedParser = bodyParser.urlencoded({extended:false});
+const { check, validationResult } = require('express-validator');
 
 
 const url = require('url');
@@ -107,36 +108,50 @@ app.get('/', (req, res) => {
     }
  });
 
- app.post('/register', (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
-    if(username&&password){
-        const sql = 'SELECT * FROM accounts WHERE username = ?';
-        con.query(sql, [username], async (error, results1, fields) => {
-            if(results1.length>0){
-                res.render('login_register', {
-                    warning: "Username already in use"
-                });
+ app.post('/register', urlencodedParser, 
+    [check('username').isLength({ min: 2 }).withMessage("At least 2 characters in username"),
+    check('password').isLength({ min: 2 }).withMessage("At least 2 characters in password")],
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.render('login_register', {
+                usernameError: errors.array()[0].msg,
+                passwordError: errors.array()[1].msg
+            });
+        } else {
+            const username = req.body.username;
+            const password = req.body.password;
+            if(username&&password){
+                const sql = 'SELECT * FROM accounts WHERE username = ?';
+                con.query(sql, [username], async (error, results1, fields) => {
+                    if(results1.length>0){
+                        res.render('login_register', {
+                            warning: "Username already in use"
+                        });
+                    } else {
+                        let hashedPass = await bcrypt.hash(password, 8);
+                        const sql = 'INSERT INTO accounts VALUES (?,?,?)';
+                        con.query(sql, [null,username,hashedPass], (error, results2, fields) => {
+                            const sql = 'SELECT id FROM accounts WHERE username = ?';
+                            con.query(sql, [username], (error, results3, fields) => {
+                                user = username;
+                                userID = results3[0].id;
+                                req.session.loggedin = true;
+                                req.session.username = username;
+                                res.redirect('/home');
+                            });
+                        });
+                    }
+                })
             } else {
-                let hashedPass = await bcrypt.hash(password, 8);
-                const sql = 'INSERT INTO accounts VALUES (?,?,?)';
-                con.query(sql, [null,username,hashedPass], (error, results2, fields) => {
-                    const sql = 'SELECT id FROM accounts WHERE username = ?';
-                    con.query(sql, [username], (error, results3, fields) => {
-                        user = username;
-                        userID = results3[0].id;
-                        req.session.loggedin = true;
-                        req.session.username = username;
-                        res.redirect('/home');
-                    });
+                res.render('login_register', {
+                    warning: "Pls fill username AND password fields"
                 });
             }
-        })
-    } else {
-        res.render('login_register', {
-            warning: "Pls fill username AND password fields"
-        });
-    }
+        }
+
+        
  });
 
  
