@@ -292,8 +292,8 @@ function addResults(){
     //console.log(updated);
     if (courseID===19){
         alert("Ei voi syöttää enempää väyliä");
-    } else if(throws===''||throws===0||PAR===''||PAR===0){
-        alert("Ei voi olla tyhjä eikä 0, ole ystävällinen ja syötä sopiva arvo :)");
+    } else if(throws===''||throws<=0||PAR===''||PAR<=0){
+        alert("Ei voi olla tyhjä eikä alle 1, ole ystävällinen ja syötä sopiva arvo :)");
     }  else {
         results[courseID] = {CourseID: courseID, Throws: throws, PAR: PAR};
         courseID++
