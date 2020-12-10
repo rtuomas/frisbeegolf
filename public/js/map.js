@@ -292,15 +292,17 @@ function addResults(){
     //console.log(updated);
     if (courseID===19){
         alert("Ei voi syöttää enempää väyliä");
-    } else {
+    } else if(throws===''||throws===0||PAR===''||PAR===0){
+        alert("Ei voi olla tyhjä eikä 0, ole ystävällinen ja syötä sopiva arvo :)");
+    }  else {
         results[courseID] = {CourseID: courseID, Throws: throws, PAR: PAR};
         courseID++
+        document.getElementById('Heitot').value = '';
+        document.getElementById('PAR').value = '';
+        document.getElementById('saveResultButton').innerHTML='<input onclick="saveResults()" type="button" value="Tallenna tulokset tietokantaan" id="saveResults"/>';
+        loadList();
     }
     //console.log(results);
-    document.getElementById('Heitot').value = '';
-    document.getElementById('PAR').value = '';
-    document.getElementById('saveResultButton').innerHTML='<input onclick="saveResults()" type="button" value="Tallenna tulokset tietokantaan" id="saveResults"/>';
-    loadList();
 }
 
 /**
