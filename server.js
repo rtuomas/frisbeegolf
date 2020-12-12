@@ -213,6 +213,8 @@ app.post('/changePassword', (req, res) => {
 });
 
 app.get('/home', (req, res) => {
+    getResults(req)
+
 	if (req.session.loggedin) {
         
         res.render('homepage', {
@@ -228,6 +230,8 @@ app.get('/home', (req, res) => {
     //response.end();
     
 });
+
+
 
 
 
@@ -347,5 +351,11 @@ app.post("/plays/trackresult", urlencodedParser, function (req,res){
 
 })
 //Joonaksen tekemät lisäykset päättyy.
+
+
+
+function getResults(req){
+    console.log("user: ", req.session.username);
+};
 
 app.listen(80);
