@@ -15,7 +15,7 @@ const url = require('url');
 
 let user=null, userID=null;
 
-/*
+
 //Tuomaksen yhteys
 const con = mysql.createConnection({
     host: 'localhost',
@@ -24,11 +24,11 @@ const con = mysql.createConnection({
     database: 'frisbee'
 });
 
- */
+
 
  
 
-
+/*
 //Joonaksen yhteys:
 const con = mysql.createConnection({
     host: "localhost",
@@ -36,7 +36,7 @@ const con = mysql.createConnection({
     password: "olso",
     database: "frisbee"
 });
-
+ */
 
 const query = util.promisify(con.query).bind(con);
 
@@ -61,6 +61,7 @@ app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
 
 app.use(session({
+    //path: '/',
 	secret: 'secretcode',
 	resave: true,
 	saveUninitialized: true
@@ -82,9 +83,9 @@ app.get('/', (req, res) => {
         });
 
     }
- });
+});
 
- app.post('/login', (req, res) => {
+app.post('/login', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
 
@@ -108,9 +109,9 @@ app.get('/', (req, res) => {
             warning: "Pls fill username and password"
         });
     }
- });
+});
 
- app.post('/register', urlencodedParser, 
+app.post('/register', urlencodedParser, 
     [check('username').isLength({ min: 2 }).withMessage("At least 2 characters in username"),
     check('password').isLength({ min: 2 }).withMessage("At least 2 characters in password")],
     (req, res) => {
@@ -151,23 +152,21 @@ app.get('/', (req, res) => {
                     warning: "Pls fill username AND password fields"
                 });
             }
-        }
-
-        
- });
-
+        } 
+    }
+);
  
 
- app.post('/logout', (req, res) => {
+app.post('/logout', (req, res) => {
     req.session.loggedin = false;
     req.session.username = null;
     user = null;
     userID = null;
     res.redirect('/');
- });
+});
 
 
- app.post('/changePassword', (req, res) => {
+app.post('/changePassword', (req, res) => {
 
     if(req.session.loggedin){
         const username = req.session.username;
@@ -211,9 +210,9 @@ app.get('/', (req, res) => {
         });
     }
      
- });
+});
 
- app.get('/home', (req, res) => {
+app.get('/home', (req, res) => {
 	if (req.session.loggedin) {
         
         res.render('homepage', {
@@ -228,7 +227,6 @@ app.get('/', (req, res) => {
     
     //response.end();
     
-    
 });
 
 
@@ -241,6 +239,7 @@ app.get('/results', (req, res) => {
     con.query(sql, [userID], (error, results, fields) => {
 
           res.send(results);
+          console.log("USERNAME:   ", req.session.username);
 
     });
 
