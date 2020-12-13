@@ -13,9 +13,7 @@ const { check, validationResult } = require('express-validator');
 
 const url = require('url');
 
-let user=null, userID=null;
-
-
+/*
 //Tuomaksen yhteys
 const con = mysql.createConnection({
     host: 'localhost',
@@ -24,11 +22,13 @@ const con = mysql.createConnection({
     database: 'frisbee'
 });
 
+ */
+
 
 
  
 
-/*
+
 //Joonaksen yhteys:
 const con = mysql.createConnection({
     host: "localhost",
@@ -36,7 +36,7 @@ const con = mysql.createConnection({
     password: "olso",
     database: "frisbee"
 });
- */
+
 
 const query = util.promisify(con.query).bind(con);
 
@@ -93,8 +93,6 @@ app.post('/login', (req, res) => {
         const sql = 'SELECT * FROM accounts WHERE username = ?';
         con.query(sql, [username], async (error, results, fields) => {
             if(results.length>0 && await bcrypt.compare(password, results[0].password)){
-                user = results[0].username;
-                userID = results[0].id;
                 req.session.loggedin = true;
                 req.session.username = username;
                 res.redirect('/home');
@@ -160,8 +158,6 @@ app.post('/register', urlencodedParser,
 app.post('/logout', (req, res) => {
     req.session.loggedin = false;
     req.session.username = null;
-    user = null;
-    userID = null;
     res.redirect('/');
 });
 
@@ -237,15 +233,24 @@ app.get('/home', (req, res) => {
 
 app.get('/results', (req, res) => {
     //console.log(user+"  "+userID)
+    if (req.session.loggedin) {
+        const username = req.session.username;
 
-    let sql = 'SELECT * FROM results LEFT JOIN locations ON results.location_id=locations.location_id WHERE account_id=('+userID+');';
-
-    con.query(sql, [userID], (error, results, fields) => {
-
-          res.send(results);
-          console.log("USERNAME:   ", req.session.username);
-
-    });
+        let sql = 'SELECT * FROM accounts WHERE username = ?';
+        (async () => {
+            try {
+                const result2 = await query(sql, [username]);
+                let userID = result2[0].id;
+                sql = 'SELECT * FROM results LEFT JOIN locations ON results.location_id=locations.location_id WHERE account_id=('+userID+');'
+                const tulos = await query(sql, [userID]);
+                res.send(tulos);
+                console.log("USERNAME:   ", req.session.username);
+            } catch (err) {
+                console.log("Getting results was not successfull! " + err);
+                res.send("Getting results was not successfull! " + err);
+            }
+        })()
+    }
 
 });
 
@@ -254,10 +259,14 @@ app.get('/results', (req, res) => {
 //----------------------------------------------------------------
 
 //Joonaksen tekemät lisäykset ja muutokset alkaa:
-//Kartta-sivun polku ja linkkaus sivustoon TURHA
+/**
+ * Old path for the map from testing only its functionality, obsolete in finished app.
+ */
+/*
 app.get("/kartta", function (req, res){
     res.sendFile(path.join(__dirname+'/views/kartta.html'));
 })
+ */
 
 /**
  * Connection to collect location and all other data for the frisbeegolf courses to map.js
@@ -296,9 +305,16 @@ app.get('/nouda', function (req, res) {
  * Connection to pass the current username and id to the map.js
  */
 app.get("/user/username", function (req, res){
-    let string={id: userID, user: user};
-    //console.log(string);
-    res.send(string);
+    if (req.session.loggedin) {
+        const username = req.session.username;
+        const sql = 'SELECT * FROM accounts WHERE username = ?';
+        con.query(sql, [username], async (error, results, fields) => {
+            let string={id: results[0].id, user: results[0].username};
+            //console.log(string);
+            res.send(string);
+        });
+    }
+
 })
 
 /**
@@ -356,6 +372,6 @@ app.post("/plays/trackresult", urlencodedParser, function (req,res){
 
 function getResults(req){
     console.log("user: ", req.session.username);
-};
+}
 
 app.listen(80);
