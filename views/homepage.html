@@ -52,15 +52,18 @@
                         <span class="closeAddedResults">&times;</span>
                         <h2 id="Rata"></h2>
                         <h4 id="User"></h4>
+                        <h2 id="Tulosteet"></h2>
                     </div>
                     <div class="modal-body">
-                        <label>Heitot
-                            <input type="number" id="Heitot" placeholder="Heitot" autofocus required/>
-                        </label>
-                        <label>PAR
-                            <input type="number" id="PAR" placeholder="PAR" required/>
-                        </label>
-                        <input onclick="addResults()" type="button" value="Lisää" id="addResults"/>
+                        <div id="resultsInput" class="visible">
+                            <label>Heitot
+                                <input type="number" id="Heitot" placeholder="Heitot" autofocus required/>
+                            </label>
+                            <label>PAR
+                                <input type="number" id="PAR" placeholder="PAR" required/>
+                            </label>
+                            <input onclick="addResults()" type="button" value="Lisää" id="addResults"/>
+                        </div>
                         <table id="list">
                         </table>
                         <p id="saveResultButton"></p>
@@ -119,5 +122,6 @@
     <script src="/public/js/leaflet-search.js"></script>
     <script src="/public/js/map.js"></script>
     <script src="/public/js/homepage.js"></script>
+    <script src="/public/js/results-handling.js"></script>
 </body>
 </html>

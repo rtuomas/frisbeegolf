@@ -20,6 +20,7 @@
     "express-validator": "^6.8.0",
     "leaflet-search": "^2.9.9",
     "mysql": "^2.18.1",
+    "nodemon": "^2.0.6",
     "pug": "^3.0.0",
     "swig": "^1.4.2"
   }

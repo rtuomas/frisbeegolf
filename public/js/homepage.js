@@ -77,7 +77,7 @@ function populateTable() {
             //var table = document.getElementById('gable');
             */
 
-            console.log(json);
+            //console.log(json);
 
 
             json.forEach(obj => {
@@ -140,6 +140,13 @@ function populateTable() {
 
 //populateTable();
 
+/**
+ * Function is called when the user/player want's to see previously played results on a specific track.
+ * This lists all played courses on that track and shows them according to the resultsID-parameter that is passed
+ * on when called.
+ * ResultsID is the specific identification number for the specific result in the database.
+ * @param resultID
+ */
 function showMore(resultID){
 
     table.innerHTML='';
