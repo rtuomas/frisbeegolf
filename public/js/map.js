@@ -198,7 +198,7 @@ function addTrack(crd, trackName, trackID) {
             //console.log("map User ID: "+json.id);
             //console.log("map User: "+json.user);
             const user = json;
-            //console.log(user);
+            //console.log(json);
 
             let trackMarker;
 

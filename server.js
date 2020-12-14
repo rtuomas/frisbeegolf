@@ -309,10 +309,13 @@ app.get("/user/username", function (req, res){
         const username = req.session.username;
         const sql = 'SELECT * FROM accounts WHERE username = ?';
         con.query(sql, [username], async (error, results, fields) => {
-            let string={id: results[0].id, user: results[0].username};
+            const string={id: results[0].id, user: results[0].username};
             //console.log(string);
             res.send(string);
         });
+    } else {
+        const string={id: null, user: null};
+        res.send(string);
     }
 
 })
