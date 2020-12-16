@@ -141,7 +141,7 @@ map.addControl( new L.Control.Search({
     zoom: 15,
     marker: false
 }) );
-
+//TODO Viimeistele
 const distanceLegend = L.control({position: 'topleft'});
 distanceLegend.onAdd = function (map) {
     const div = L.DomUtil.create('div', 'distance legend');
@@ -198,14 +198,14 @@ function makeDistanceQuery(){
     const distance = document.getElementById('distanceValue').value;
     searchLayer.clearLayers();
     //JSON.stringify(string);
-    //let crd, trackName, trackID;
+    let crd, trackName, trackID;
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             json = JSON.parse(xmlhttp.responseText);
             //console.log("Tietokannasta haettu ja map.js lähetetty data:");
             console.log(json);
-            /*
+
             for (let i=0; i<json.rows.length; i++){
                 //console.log(json.rows[i].latitude+' '+json.rows[i].longitude);
 
@@ -214,12 +214,12 @@ function makeDistanceQuery(){
                     trackName = json.rows[i].location_name;
                     trackID = json.rows[i].location_id;
 
-                    //addTrack(crd, trackName, trackID);
+                    addTrack(crd, trackName, trackID);
                 }
             }
 
-             */
-            //map.setView([crd.latitude, crd.longitude], 10);
+
+            map.setView([crd.latitude, crd.longitude], 10);
         }
     };
     xmlhttp.open("GET", "http://127.0.0.1:80/nouda/distance?dis="+distance+"&lat="+position.latitude+"&lon="+position.longitude, true);

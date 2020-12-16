@@ -294,7 +294,7 @@ app.get('/nouda/distance', function (req, res) {
     const latitude = q.lat;
     const longitude = q.lon;
 
-    let sql="SELECT location_name, " +
+    let sql="SELECT location_name, location_id, latitude, longitude, " +
         "( 6371 * acos( cos( radians("+latitude+") ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians("+longitude+") ) + sin( radians("+latitude+") ) * sin(radians(latitude)) ) ) AS distance " +
         "FROM locations HAVING distance <"+distance+" ORDER BY distance";
 
