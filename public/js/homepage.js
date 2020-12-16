@@ -45,20 +45,14 @@ window.onclick = function(event) {
 }
 
 
-/*
-function logout() {
-    let xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", "http://localhost:80/logout", true);
-    xmlhttp.send();
-}
-*/
-
-
 //const table = document.getElementById("table");
 //onst results = document.getElementById("results");
 let resultsAllCourses = [];
 let count = 0;
 
+/**
+ * This function fills the result table with correct data.
+ */
 function populateTable() {
     table.innerHTML='';
     let xmlhttp = new XMLHttpRequest();
@@ -72,14 +66,6 @@ function populateTable() {
               <th>Rata Par</th>
               <th>Oma tulos</th>
             </tr>`;
-
-            /*
-            //var table = document.getElementById('gable');
-            */
-
-            //console.log(json);
-
-
             json.forEach(obj => {
 
                 resultsAllCourses [count]= {
@@ -137,8 +123,6 @@ function populateTable() {
     xmlhttp.send();
 
 }
-
-//populateTable();
 
 /**
  * Function is called when the user/player want's to see previously played results on a specific track.

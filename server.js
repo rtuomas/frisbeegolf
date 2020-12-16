@@ -25,10 +25,6 @@ const con = mysql.createConnection({
  */
 
 
-
- 
-
-
 //Joonaksen yhteys:
 const con = mysql.createConnection({
     host: "localhost",
@@ -70,25 +66,30 @@ app.use(session({
 app.use(express.static(__dirname + '/public'));
 app.use('/public', express.static(path.join(__dirname, "public")));
 
+
+/**
+ * Redirects or renders view depending on whether user is looged in or not.
+ */
 app.get('/', (req, res) => {
     if (req.session.loggedin) {
         res.redirect('/home');
 	} else {
-        //res.sendFile(path.join(__dirname + '/views/login_register.html'));
         const ip = req.connection.remoteAddress
         const port = req.connection.remotePort
         console.log(ip, port);
         res.render('login_register', {
             ip: "My ip: " + ip + " port: " + port
         });
-
     }
 });
 
+/**
+ * This login path authenticates if username and password matches the ones inside database.
+ * If true, it redirects view to the /home and if not, it informs if something is wrong.
+ */
 app.post('/login', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
-
     if(username&&password) {
         const sql = 'SELECT * FROM accounts WHERE username = ?';
         con.query(sql, [username], async (error, results, fields) => {
@@ -109,11 +110,15 @@ app.post('/login', (req, res) => {
     }
 });
 
+/**
+ * This path is for registration. Certain validations are done to ensure security using express-validator.
+ * Bcryptjs hashes the password for security reasons.
+ * If given username or password does not meet the requirements, this path will inform it. 
+ */
 app.post('/register', urlencodedParser, 
     [check('username').isLength({ min: 2 }).withMessage("At least 2 characters in username"),
     check('password').isLength({ min: 2 }).withMessage("At least 2 characters in password")],
     (req, res) => {
-
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             res.render('login_register', {
@@ -154,36 +159,30 @@ app.post('/register', urlencodedParser,
     }
 );
  
-
+/**
+ * Logouts the user and nulls all the necessary information.
+ */
 app.post('/logout', (req, res) => {
     req.session.loggedin = false;
     req.session.username = null;
     res.redirect('/');
 });
 
-
+/**
+ * These paths are self-explanatory. This one basically check whether current password is correct and that the new password (typed twice) matches each other.
+ */
 app.post('/changePassword', (req, res) => {
-
     if(req.session.loggedin){
         const username = req.session.username;
-
         const sql = 'SELECT * FROM accounts WHERE username = ?';
         con.query(sql, [username], async (error, results, fields) => {
             if(results.length>0 && await bcrypt.compare(req.body.passwordCurrent, results[0].password)){
                 if(req.body.password1 === req.body.password2) {
                     let hashedPass = await bcrypt.hash(req.body.password1, 8);
-
                     const sql = "UPDATE accounts SET password = ? WHERE username = ?";
                     con.query(sql, [hashedPass, username], async (error, results, fields) => {
                         console.log("Password changed!");
                         res.redirect('home');
-                        /*
-                        res.render('homepage', {
-                            warning: "Password is changed",
-                            username: req.session.username
-                        });
-                        */
-                        
                     });
                 } else {
                     res.render('homepage', {
@@ -191,8 +190,6 @@ app.post('/changePassword', (req, res) => {
                         username: req.session.username
                     });
                 }
-                
-
             } else {
                 res.render('homepage', {
                     warning: "Password is not correct",
@@ -205,37 +202,31 @@ app.post('/changePassword', (req, res) => {
             warning: "You have to login first!"
         });
     }
-     
 });
 
+/**
+ * For logged in user this one renders the homepage. If user is not logged in, it renders the login page.
+ * Note that depending on session status, it determines how page is set for user.
+ */
 app.get('/home', (req, res) => {
     getResults(req)
-
 	if (req.session.loggedin) {
-        
         res.render('homepage', {
             username: req.session.username
         });
-        //res.send('Welcome back, ' + request.session.username + '!');
 	} else {
 		res.render('login_register', {
             warning: "You have to login first!"
         });
     }
-    
-    //response.end();
-    
 });
 
-
-
-
-
+/**
+ * /results path fetches the results from database bound to the user that is logged in.
+ */
 app.get('/results', (req, res) => {
-    //console.log(user+"  "+userID)
     if (req.session.loggedin) {
         const username = req.session.username;
-
         let sql = 'SELECT * FROM accounts WHERE username = ?';
         (async () => {
             try {
@@ -251,7 +242,6 @@ app.get('/results', (req, res) => {
             }
         })()
     }
-
 });
 
 
@@ -273,7 +263,6 @@ app.get("/kartta", function (req, res){
  */
 app.get('/nouda', function (req, res) {
     let area = url.parse(req.url, true).query;
-    //console.log("map.js ratojen haku: "+req.url);
     let sql;
     if (area.area!=='kaikki'){
         sql="SELECT * FROM Locations WHERE location_area = ?";
@@ -285,13 +274,9 @@ app.get('/nouda', function (req, res) {
         try {
             const rows = await query(sql,[area.area]);
             const string = JSON.stringify(rows);
-            //console.log("Tietokannasta raakadata:");
-            //console.log(rows);
             const alteredResult = '{"numOfRows":'+rows.length+',"rows":'+string+'}';
-            //console.log("Tietokannasta muunneltu data: "+alteredResult);
             res.set('Access-Control-Allow-Origin', '*'); //Ehkä tietoturvariski jos arvona *
             res.send(alteredResult);
-
         }
         catch (err) {
             console.log("Database error!"+ err);
@@ -311,23 +296,19 @@ app.get("/user/username", function (req, res){
         const sql = 'SELECT * FROM accounts WHERE username = ?';
         con.query(sql, [username], async (error, results, fields) => {
             const string={id: results[0].id, user: results[0].username};
-            //console.log(string);
             res.send(string);
         });
     } else {
         const string={id: null, user: null};
         res.send(string);
     }
-
 })
 
 /**
  * Post method to get all the player results to the database from the map.js
  */
 app.post("/plays/trackresult", urlencodedParser, function (req,res){
-    //console.log("body: %j", req.body);
     const jsonObj = req.body;
-    //console.log(jsonObj[0].trackID+' '+jsonObj[0].userID+' '+jsonObj[1].Throws);
     let values=[];
     const date = new Date();
     const day = date.getDate();
@@ -355,9 +336,6 @@ app.post("/plays/trackresult", urlencodedParser, function (req,res){
     for(let i=jsonObj.length; i<38-jsonObj.length; i++){
         values.push([0]);
     }
-
-    //console.log(values);
-
     const sqlquery = "INSERT INTO results VALUES (?)";
     (async () => {
         try {

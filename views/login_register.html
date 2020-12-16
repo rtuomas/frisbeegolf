@@ -11,34 +11,7 @@
 	</head>
 	<body>
 
-
-		<!--
-
-<div class="login-form">
-			<h1>Login here</h1>
-			<form action="login" method="POST">
-				<input type="text" name="username" placeholder="Username" required>
-				<input type="password" name="password" placeholder="Password" required>
-				<input type="submit" value="Log in">
-			</form>
-		</div>
-
-		<div class="register-form">
-			<h1>Or register</h1>
-			<form action="register" method="POST">
-				<input type="text" name="username" placeholder="Username" required>
-				<input type="password" name="password" placeholder="Password" required>
-				<input type="submit" value="Register">
-			</form>
-		</div>
-
-		<p id="warning">{{ warning }}</p>
-		-->
-
 		<nav>
-			
-			
-
 			<ul>
 				<li>
 					<div class="login-form">
@@ -50,9 +23,6 @@
 						</form>
 					</div>
 				</li>
-				
-				
-				
 				<li>
 					<div class="register-form">
 						<h3>Sign up</h3>
@@ -63,8 +33,6 @@
 						</form>
 					</div>
 				</li>
-
-				
 				<li class="warning">{{ usernameError }}</li>
 				<li class="warning"> {{ passwordError }}</li>
 				<li class="warning">{{ warning }}</li>
@@ -72,28 +40,10 @@
 		</nav>
 
 		<main>
-
-		<div id="bottom-container">
-			<!-- Kartan varattu paikka-->
-			<div id="map"></div>
-
-			<!--
-			<div id="results">
-				<table id="table">
-					<h2>Results</h2>
-						<tr>
-						  <th>id</th>
-						  <th>user</th>
-						  <th>result</th>
-						</tr>
-				</table>
-			
+			<div id="bottom-container">
+				<!-- Kartan varattu paikka-->
+				<div id="map"></div>
 			</div>
-			-->	
-		</div>
-
-
-
 		</main>
 	</body>
 	<!-- kirjastot haetaan ennen omaa js-tiedostoa-->
