@@ -1,0 +1,88 @@
+++//Seuraavat REST-kutust käsitetltu map.js ja results-handling.js//++
+map.js funktio makeQuery lähettää server.js GET-komennon muodossa:
+
+/nouda?="käyttäjänsyöte"
+esim /nouda?=Uusimaa
+
+Komennolla ajetaan asyncroninen kysely tietokantaan annetulla arvolla ja palautetaan:
+
+Raakadatana:
+RowDataPacket {
+    location_id: 2970,
+    location_area: 'Uusimaa',
+    location_city: 'Tuusula',
+    location_name: 'Ristikiven Frisbeegolf',
+    location_address: 'Maitiaisentie, 4300 Tuusula',
+    latitude: 60.40225,
+    longitude: 24.989689
+  }
+
+String mutoon ja uuteen taulukkoon ajettuna:
+Laskettuna rivien määrä ja sijainnit kaikkine tietoineen
+{"numOfRows":76,"rows":[{"location_id":2605,"location_area":"Uusimaa","location_city":"Helsinki",
+"location_name":"Talin frisbeegolfpuisto","location_address":"Talinhuippu (Takkatie), 00360 Helsinki",
+"latitude":60.21315136,"longitude":24.846823668},...
+
+Tämä muunneltu muoto palautetaan map.js funktioon mistä GET-komento lähti
+map.js käy taulukon läpi ja ehtolausein karsii pois paikat joissa ei ole koordinaatteja ja kutsuu seuraavaa
+addTrack-funktiota jolla asettaa kartalle rataikonit.
+
+map.js funktio addTrack tekee myös GET-komennon server.js:n muodossa, komennolla ei välitetä mitään dataa serverille,
+mutta sillä pyydetään aktiivista käyttäjänimeä ja id:tä:
+
+/user/username
+
+Komento tekee serverille kyselyn aktiivisesta käyttäjästä sekä asettaa aktiivisen käyttäjän muuttujalle jonka avulla
+tehdään kysely tietokantaan.
+Tietokannasta palautettu vastaus ajetaan suoraan string-taulukkoon joka palautetaan sellaisenaan map.js:lle takaisin,
+muoto:
+
+{ id: 1, user: 'joonas' }
+
+Funktio ottaa tiedon vastaan kyseisessä muodossa ja vertailuoperaattorin avulla lisää rataikoneihin vaihtelevan tiedon
+sen mukaan onko kukaan kirjautuneena sisälle, jos on voi pelata valitun radan, jos ei kehotetaan kirjautumaan sisään.
+Jos käyttäjä on kirjautuneena sisälle on ikonissa nappi: "Pelaa tämä", nappia painamalla aktivoituu results-handling.js
+skriptissä oleva funktio playTrack joka tekee serverille kyselyn jälleen käyttäjänimestä ja id:stä, serverille ei
+välitetä mitään dataa:
+
+/user/username
+
+Komento palauttaa saman tuloksen kuin edellinen kysely:
+
+{ id: 1, user: 'joonas' }
+
+Palautunutta id:tä ja käyttäjänimeä käytetään lokaalissa tulostaulussa joka myöhemmin tallennetaan tietokantaan
+käyttämällä results-handling.js skriptistä löytyvää funktiota saveResults.
+
+SaveResults-funktio tekee server.js POST-komennon ja välittää paikallisen taulukon tiedot sinne kääntäen ne
+String-muotoon:
+
+[{"trackID":4373,"userID":1},{"CourseID":1,"Throws":"2","PAR":"2"},{"CourseID":2,"Throws":"3","PAR":"3"}]
+
+Saapunut POST-komennon String-taulukko iteroidaan uuteen talukkoon ja varmistetaan erilaisten vertailuoperaattoreiden
+avulla, että pelatut tulokset menevät oikeassa järjestyksessä taulukkoon vaikka välissä olisi pelaamattomia väyliä sekä
+varmistetaan, että taulukkoon täytetään jokaiselle 40 paikalle arvo, sillä tietokannan taulu on 40-paikkainen ja vaatii
+arvon jokaiseen kolumniin.
+Juuri luotu taulukko ajetaan sellaisenaan suoraan tietokantaan seuraavassa muodossa:
+[
+  [ null ],         [ '4373' ], [ '1' ],
+  [ '2020-12-16' ], [ '2' ],    [ '2' ],
+  [ '3' ],          [ '3' ],    [ 0 ],
+  [ 0 ],            [ 0 ],      [ 0 ],
+  [ 0 ],            [ 0 ],      [ 0 ],
+  [ 0 ],            [ 0 ],      [ 0 ],
+  [ 0 ],            [ 0 ],      [ 0 ],
+  [ 0 ],            [ 0 ],      [ 0 ],
+  [ 0 ],            [ 0 ],      [ 0 ],
+  [ 0 ],            [ 0 ],      [ 0 ],
+  [ 0 ],            [ 0 ],      [ 0 ],
+  [ 0 ],            [ 0 ],      [ 0 ],
+  [ 0 ],            [ 0 ],      [ 0 ],
+  [ 0 ]
+]
+
+POST-komento ajaa taulukon tietokantaan asynkronisesti ja palauttaa results-handling.js saveResults-funktiolle String-muotoisen tekstin:
+
+"Tulosten tallennus onnistui!" tai "Tallentaminen epäonnistui! Ota yhteys sivuston ylläpitoon"
+
+++//Joonaksen tekemät selitykset päättyvät//++

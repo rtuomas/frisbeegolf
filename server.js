@@ -273,8 +273,7 @@ app.get("/kartta", function (req, res){
  */
 app.get('/nouda', function (req, res) {
     let area = url.parse(req.url, true).query;
-    let alteredResult;
-    let string;
+    //console.log("map.js ratojen haku: "+req.url);
     let sql;
     if (area.area!=='kaikki'){
         sql="SELECT * FROM Locations WHERE location_area = ?";
@@ -285,9 +284,11 @@ app.get('/nouda', function (req, res) {
     (async () => {
         try {
             const rows = await query(sql,[area.area]);
-            string = JSON.stringify(rows);
-            alteredResult = '{"numOfRows":'+rows.length+',"rows":'+string+'}';
+            const string = JSON.stringify(rows);
+            //console.log("Tietokannasta raakadata:");
             //console.log(rows);
+            const alteredResult = '{"numOfRows":'+rows.length+',"rows":'+string+'}';
+            //console.log("Tietokannasta muunneltu data: "+alteredResult);
             res.set('Access-Control-Allow-Origin', '*'); //Ehkä tietoturvariski jos arvona *
             res.send(alteredResult);
 
@@ -324,8 +325,8 @@ app.get("/user/username", function (req, res){
  * Post method to get all the player results to the database from the map.js
  */
 app.post("/plays/trackresult", urlencodedParser, function (req,res){
-    console.log("body: %j", req.body);
-    let jsonObj = req.body;
+    //console.log("body: %j", req.body);
+    const jsonObj = req.body;
     //console.log(jsonObj[0].trackID+' '+jsonObj[0].userID+' '+jsonObj[1].Throws);
     let values=[];
     const date = new Date();
@@ -334,8 +335,8 @@ app.post("/plays/trackresult", urlencodedParser, function (req,res){
     const year = date.getFullYear();
     const today = year+'-'+month+'-'+day;
 
-    let trackIDE = jsonObj[0].trackID.toString();
-    let userIDE = jsonObj[0].userID.toString();
+    const trackIDE = jsonObj[0].trackID.toString();
+    const userIDE = jsonObj[0].userID.toString();
 
         values=[[null], [trackIDE], [userIDE], [today]];
 
@@ -355,7 +356,7 @@ app.post("/plays/trackresult", urlencodedParser, function (req,res){
         values.push([0]);
     }
 
-    console.log(values);
+    //console.log(values);
 
     const sqlquery = "INSERT INTO results VALUES (?)";
     (async () => {

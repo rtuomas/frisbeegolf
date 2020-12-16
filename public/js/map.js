@@ -164,6 +164,7 @@ function makeQuery() {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             json = JSON.parse(xmlhttp.responseText);
+            //console.log("Tietokannasta haettu ja map.js lähetetty data:");
             //console.log(json);
             for (let i=0; i<json.rows.length; i++){
                 //console.log(json.rows[i].latitude+' '+json.rows[i].longitude);
