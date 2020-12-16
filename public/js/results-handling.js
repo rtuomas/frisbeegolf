@@ -1,7 +1,7 @@
 'use strict'
 /**
  * @author Joonas Soininen
- * @version 2.5.1
+ * @version 2.5.2
  *
  */
 const modalResults = document.getElementById("onCourse");

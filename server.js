@@ -1,3 +1,10 @@
+'use strict';
+/**
+ * @author Tuomas Rajala
+ * @author Joonas Soininen
+ * @version 3.0
+ *
+ */
 const mysql = require('mysql');
 const express = require('express');
 const session = require('express-session');
@@ -9,8 +16,6 @@ const util = require('util');
 const cors = require('cors');
 const urlencodedParser = bodyParser.urlencoded({extended:false});
 const { check, validationResult } = require('express-validator');
-
-
 const url = require('url');
 
 /*
@@ -32,7 +37,6 @@ const con = mysql.createConnection({
     password: "olso",
     database: "frisbee"
 });
-
 
 const query = util.promisify(con.query).bind(con);
 
@@ -209,7 +213,6 @@ app.post('/changePassword', (req, res) => {
  * Note that depending on session status, it determines how page is set for user.
  */
 app.get('/home', (req, res) => {
-    getResults(req)
 	if (req.session.loggedin) {
         res.render('homepage', {
             username: req.session.username
@@ -244,26 +247,15 @@ app.get('/results', (req, res) => {
     }
 });
 
-
-
 //----------------------------------------------------------------
 
 //Joonaksen tekemät lisäykset ja muutokset alkaa:
-/**
- * Old path for the map from testing only its functionality, obsolete in finished app.
- */
-/*
-app.get("/kartta", function (req, res){
-    res.sendFile(path.join(__dirname+'/views/kartta.html'));
-})
- */
 
 /**
  * Connection to collect location and all other data for the frisbeegolf courses to map.js using counties
  */
 app.get('/nouda/maakunta', function (req, res) {
     let area = url.parse(req.url, true).query;
-    //console.log(area);
     let sql;
     if (area.area!=='kaikki'){
         sql="SELECT * FROM Locations WHERE location_area = ?";
@@ -379,11 +371,5 @@ app.post("/plays/trackresult", urlencodedParser, function (req,res){
 
 })
 //Joonaksen tekemät lisäykset päättyy.
-
-
-
-function getResults(req){
-    console.log("user: ", req.session.username);
-}
 
 app.listen(80);
