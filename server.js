@@ -259,11 +259,11 @@ app.get("/kartta", function (req, res){
  */
 
 /**
- * Connection to collect location and all other data for the frisbeegolf courses to map.js
+ * Connection to collect location and all other data for the frisbeegolf courses to map.js using counties
  */
 app.get('/nouda/maakunta', function (req, res) {
     let area = url.parse(req.url, true).query;
-    console.log(area);
+    //console.log(area);
     let sql;
     if (area.area!=='kaikki'){
         sql="SELECT * FROM Locations WHERE location_area = ?";
@@ -287,7 +287,9 @@ app.get('/nouda/maakunta', function (req, res) {
         }
     })()
 })
-//TODO Viimeistele sijaintien nouto!
+/**
+ * Connection to collect location and all other data for the frisbeegolf courses to map.js using distance from user
+ */
 app.get('/nouda/distance', function (req, res) {
     const q = url.parse(req.url, true).query;
     const distance = q.dis;
@@ -296,7 +298,7 @@ app.get('/nouda/distance', function (req, res) {
 
     let sql="SELECT location_name, location_id, latitude, longitude, " +
         "( 6371 * acos( cos( radians("+latitude+") ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians("+longitude+") ) + sin( radians("+latitude+") ) * sin(radians(latitude)) ) ) AS distance " +
-        "FROM locations HAVING distance <"+distance+" ORDER BY distance";
+        "FROM locations HAVING distance <"+distance+" ORDER BY distance DESC";
 
     (async () => {
         try {

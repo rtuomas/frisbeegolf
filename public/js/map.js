@@ -104,6 +104,17 @@ function addMarker(crd, teksti) {
     });
 }
 
+
+const distanceLegend = L.control({position: 'topleft'});
+distanceLegend.onAdd = function (map) {
+    const div = L.DomUtil.create('div', 'distance legend');
+    div.innerHTML = '<input type="number" id="distanceValue" placeholder="Etäisyys kilometreinä">' +
+        '<input onclick="makeDistanceQuery()" type="button" value="Etsi radat" id="submit">';
+    div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
+    return div;
+};
+distanceLegend.addTo(map);
+
 const areaLegend = L.control({position: 'topleft'});
 areaLegend.onAdd = function (map) {
     const div = L.DomUtil.create('div', 'area legend');
@@ -128,7 +139,7 @@ areaLegend.onAdd = function (map) {
         '    <option value="Uusimaa" id="uusimaa">Uusimaa</option>\n' +
         '    <option value="Varsinais-Suomi" id="varsinais-suomi">Varsinais-Suomi</option>\n' +
         '</select>' +
-        '<br><input onclick="makeCountyQuery()" type="button" value="Näytä radat" id="submit">';
+        '<input onclick="makeCountyQuery()" type="button" value="Näytä radat" id="submit">';
     div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
     return div;
 };
@@ -141,16 +152,6 @@ map.addControl( new L.Control.Search({
     zoom: 15,
     marker: false
 }) );
-//TODO Viimeistele
-const distanceLegend = L.control({position: 'topleft'});
-distanceLegend.onAdd = function (map) {
-    const div = L.DomUtil.create('div', 'distance legend');
-    div.innerHTML = '<input type="number" id="distanceValue">' +
-        '<br><input onclick="makeDistanceQuery()" type="button" value="Näytä radat" id="submit">';
-    div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
-    return div;
-};
-distanceLegend.addTo(map);
 
 const myLocation = L.control({position: 'bottomright'});
 myLocation.onAdd = function (map) {
@@ -193,12 +194,15 @@ function makeCountyQuery() {
     xmlhttp.open("GET", "http://127.0.0.1:80/nouda/maakunta?area="+area, true);
     xmlhttp.send();
 }
-//TODO Viimeistele sijaintien nouto
+
 function makeDistanceQuery(){
-    const distance = document.getElementById('distanceValue').value;
+    let distance = document.getElementById('distanceValue').value;
+    if (distance <=0){
+        alert("Syötä positiivinen luku!");
+    } else {
     searchLayer.clearLayers();
     //JSON.stringify(string);
-    let crd, trackName, trackID;
+    let crd, trackName, trackID, km;
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
@@ -207,24 +211,25 @@ function makeDistanceQuery(){
             console.log(json);
 
             for (let i=0; i<json.rows.length; i++){
-                //console.log(json.rows[i].latitude+' '+json.rows[i].longitude);
+                //console.log(json.rows[i].location_name+' '+json.rows[i].distance);
 
                 if (json.rows[i].latitude!==0&&json.rows[i].longitude!==0){
                     crd = {latitude: json.rows[i].latitude, longitude: json.rows[i].longitude};
                     trackName = json.rows[i].location_name;
                     trackID = json.rows[i].location_id;
+                    km = json.rows[i].distance;
+                    let fixedkm = km.toFixed(2);
 
                     addTrack(crd, trackName, trackID);
+
                 }
             }
-
-
-            map.setView([crd.latitude, crd.longitude], 10);
+            map.setView([position.latitude, position.longitude], 10);
         }
     };
     xmlhttp.open("GET", "http://127.0.0.1:80/nouda/distance?dis="+distance+"&lat="+position.latitude+"&lon="+position.longitude, true);
     xmlhttp.send();
-
+    }
 }
 
 /**
