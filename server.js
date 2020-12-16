@@ -261,8 +261,9 @@ app.get("/kartta", function (req, res){
 /**
  * Connection to collect location and all other data for the frisbeegolf courses to map.js
  */
-app.get('/nouda', function (req, res) {
+app.get('/nouda/maakunta', function (req, res) {
     let area = url.parse(req.url, true).query;
+    console.log(area);
     let sql;
     if (area.area!=='kaikki'){
         sql="SELECT * FROM Locations WHERE location_area = ?";
@@ -273,6 +274,33 @@ app.get('/nouda', function (req, res) {
     (async () => {
         try {
             const rows = await query(sql,[area.area]);
+            const string = JSON.stringify(rows);
+            const alteredResult = '{"numOfRows":'+rows.length+',"rows":'+string+'}';
+            res.set('Access-Control-Allow-Origin', '*'); //Ehkä tietoturvariski jos arvona *
+            res.send(alteredResult);
+        }
+        catch (err) {
+            console.log("Database error!"+ err);
+        }
+        finally {
+            //conn.end();
+        }
+    })()
+})
+//TODO Viimeistele sijaintien nouto!
+app.get('/nouda/distance', function (req, res) {
+    const q = url.parse(req.url, true).query;
+    const distance = q.dis;
+    const latitude = q.lat;
+    const longitude = q.lon;
+
+    let sql="SELECT location_name, " +
+        "( 6371 * acos( cos( radians("+latitude+") ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians("+longitude+") ) + sin( radians("+latitude+") ) * sin(radians(latitude)) ) ) AS distance " +
+        "FROM locations HAVING distance <"+distance+" ORDER BY distance";
+
+    (async () => {
+        try {
+            const rows = await query(sql);
             const string = JSON.stringify(rows);
             const alteredResult = '{"numOfRows":'+rows.length+',"rows":'+string+'}';
             res.set('Access-Control-Allow-Origin', '*'); //Ehkä tietoturvariski jos arvona *

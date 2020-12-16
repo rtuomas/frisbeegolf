@@ -104,8 +104,8 @@ function addMarker(crd, teksti) {
     });
 }
 
-const legend = L.control({position: 'topleft'});
-legend.onAdd = function (map) {
+const areaLegend = L.control({position: 'topleft'});
+areaLegend.onAdd = function (map) {
     const div = L.DomUtil.create('div', 'area legend');
     div.innerHTML = '<select name="valinta" id="valinta">\n' +
         '    <option value="kaikki" id="empty">Kaikki radat</option>\n' +
@@ -128,11 +128,11 @@ legend.onAdd = function (map) {
         '    <option value="Uusimaa" id="uusimaa">Uusimaa</option>\n' +
         '    <option value="Varsinais-Suomi" id="varsinais-suomi">Varsinais-Suomi</option>\n' +
         '</select>' +
-        '<br><input onclick="makeQuery()" type="button" value="Näytä radat" id="submit">';
+        '<br><input onclick="makeCountyQuery()" type="button" value="Näytä radat" id="submit">';
     div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
     return div;
 };
-legend.addTo(map);
+areaLegend.addTo(map);
 
 map.addControl( new L.Control.Search({
     position:'topleft',
@@ -141,6 +141,16 @@ map.addControl( new L.Control.Search({
     zoom: 15,
     marker: false
 }) );
+
+const distanceLegend = L.control({position: 'topleft'});
+distanceLegend.onAdd = function (map) {
+    const div = L.DomUtil.create('div', 'distance legend');
+    div.innerHTML = '<input type="number" id="distanceValue">' +
+        '<br><input onclick="makeDistanceQuery()" type="button" value="Näytä radat" id="submit">';
+    div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
+    return div;
+};
+distanceLegend.addTo(map);
 
 const myLocation = L.control({position: 'bottomright'});
 myLocation.onAdd = function (map) {
@@ -156,7 +166,7 @@ myLocation.addTo(map);
  * trough an xmlhttp-request and passes data to the server, in this case the chosen are where the frisbeegolf courses
  * are searched for.
  */
-function makeQuery() {
+function makeCountyQuery() {
     const area = document.getElementById('valinta').value;
     searchLayer.clearLayers();
     let crd, trackName, trackID;
@@ -180,8 +190,41 @@ function makeQuery() {
             map.setView([crd.latitude, crd.longitude], 10);
         }
     };
-    xmlhttp.open("GET", "http://127.0.0.1:80/nouda?area="+area, true);
+    xmlhttp.open("GET", "http://127.0.0.1:80/nouda/maakunta?area="+area, true);
     xmlhttp.send();
+}
+//TODO Viimeistele sijaintien nouto
+function makeDistanceQuery(){
+    const distance = document.getElementById('distanceValue').value;
+    searchLayer.clearLayers();
+    //JSON.stringify(string);
+    //let crd, trackName, trackID;
+    let xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+            json = JSON.parse(xmlhttp.responseText);
+            //console.log("Tietokannasta haettu ja map.js lähetetty data:");
+            console.log(json);
+            /*
+            for (let i=0; i<json.rows.length; i++){
+                //console.log(json.rows[i].latitude+' '+json.rows[i].longitude);
+
+                if (json.rows[i].latitude!==0&&json.rows[i].longitude!==0){
+                    crd = {latitude: json.rows[i].latitude, longitude: json.rows[i].longitude};
+                    trackName = json.rows[i].location_name;
+                    trackID = json.rows[i].location_id;
+
+                    //addTrack(crd, trackName, trackID);
+                }
+            }
+
+             */
+            //map.setView([crd.latitude, crd.longitude], 10);
+        }
+    };
+    xmlhttp.open("GET", "http://127.0.0.1:80/nouda/distance?dis="+distance+"&lat="+position.latitude+"&lon="+position.longitude, true);
+    xmlhttp.send();
+
 }
 
 /**

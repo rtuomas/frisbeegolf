@@ -1,8 +1,8 @@
 ++//Seuraavat REST-kutust käsitetltu map.js ja results-handling.js//++
 map.js funktio makeQuery lähettää server.js GET-komennon muodossa:
 
-/nouda?="käyttäjänsyöte"
-esim /nouda?=Uusimaa
+/nouda/maakunta?="käyttäjänsyöte"
+esim /nouda/maakunta?=Uusimaa
 
 Komennolla ajetaan asyncroninen kysely tietokantaan annetulla arvolla ja palautetaan:
 
