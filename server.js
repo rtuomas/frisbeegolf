@@ -145,8 +145,6 @@ app.post('/register', urlencodedParser,
                         con.query(sql, [null,username,hashedPass], (error, results2, fields) => {
                             const sql = 'SELECT id FROM accounts WHERE username = ?';
                             con.query(sql, [username], (error, results3, fields) => {
-                                user = username;
-                                userID = results3[0].id;
                                 req.session.loggedin = true;
                                 req.session.username = username;
                                 res.redirect('/home');
@@ -248,8 +246,6 @@ app.get('/results', (req, res) => {
 });
 
 //----------------------------------------------------------------
-
-//Joonaksen tekemät lisäykset ja muutokset alkaa:
 
 /**
  * Connection to collect location and all other data for the frisbeegolf courses to map.js using counties
@@ -370,6 +366,5 @@ app.post("/plays/trackresult", urlencodedParser, function (req,res){
     })()
 
 })
-//Joonaksen tekemät lisäykset päättyy.
 
 app.listen(80);
