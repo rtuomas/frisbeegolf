@@ -1,14 +1,17 @@
 'use strict';
 /**
  * @author Joonas Soininen
- * @version 2.7
+ * @version 2.8
  *
  */
 
 let json;
 let position = null;
 
-let darkMap = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', { //Määritettään eri karttakerroksille muuttujat ja karttojen lähteet
+/**
+ * Variables for all different map-layers and the path to the right layer.
+ */
+let darkMap = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
         maxZoom: 20,
         attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
     }),
@@ -26,17 +29,27 @@ let darkMap = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dar
         zoomOffset: -1,
         id: 'hsl-map'});
 
-const map = L.map('map', { //Määritetään kartalle muttuja ja annetaan sille eri käytetttävät layerit
+/**
+ * Variable for the map itself and declarations for the different layers that it can use
+ */
+const map = L.map('map', {
     layers: [darkMap, osm, realMap, hsl]
 });
 
-let baseMaps = { //Tässä luodaan muttuja karttavalikolle
+/**
+ * Variable for the different layers and their types put into a list.
+ * @type {{HSL: *, Dark: *, OSM: *, Air: *}}
+ */
+let baseMaps = {
     "Dark": darkMap,
     "HSL": hsl,
     "Air": realMap,
     "OSM": osm
 };
 
+/**
+ * Previously created list of layers is added on top of the map layer.
+ */
 L.control.layers(baseMaps).addTo(map); //Tällä lisätään luotu karttamuuttuja itse kartalle
 
 /**
@@ -72,14 +85,22 @@ function error(err) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
 }
 
+/**
+ * Adding the search function to the map layer and a distance scale.
+ * Aligning the zoom-controls position from default to the top right corner.
+ */
 const searchLayer = L.layerGroup().addTo(map);
-
 L.control.scale().addTo(map);
-
 map.zoomControl.setPosition('topright');
 
+/**
+ * User location control
+ */
 navigator.geolocation.getCurrentPosition(success, error, options);
 
+/**
+ * Variables for custom icons and their settings
+ */
 const meIcon = L.icon({
     iconUrl: 'public/images/me.png',
     iconSize: [50,50],
@@ -104,7 +125,10 @@ function addMarker(crd, teksti) {
     });
 }
 
-
+/**
+ * Creating a variable for the distance input, adding it on the map-layer and making it a function that can be used to
+ * get user input.
+ */
 const distanceLegend = L.control({position: 'topleft'});
 distanceLegend.onAdd = function (map) {
     const div = L.DomUtil.create('div', 'distance legend');
@@ -115,6 +139,9 @@ distanceLegend.onAdd = function (map) {
 };
 distanceLegend.addTo(map);
 
+/**
+ * Creating a variable for the county search function, adding all the options to it and adding it to the map-layer.
+ */
 const areaLegend = L.control({position: 'topleft'});
 areaLegend.onAdd = function (map) {
     const div = L.DomUtil.create('div', 'area legend');
@@ -145,6 +172,9 @@ areaLegend.onAdd = function (map) {
 };
 areaLegend.addTo(map);
 
+/**
+ * Adding setting for the search function.
+ */
 map.addControl( new L.Control.Search({
     position:'topleft',
     layer: searchLayer,
@@ -153,6 +183,9 @@ map.addControl( new L.Control.Search({
     marker: false
 }) );
 
+/**
+ * Creating a variable for going back to my own location, adding a function to it and declaring what it does when clicked.
+ */
 const myLocation = L.control({position: 'bottomright'});
 myLocation.onAdd = function (map) {
     const div = L.DomUtil.create('div', 'oma_sijainti');
@@ -163,7 +196,7 @@ myLocation.onAdd = function (map) {
 myLocation.addTo(map);
 
 /**
- * makeQuery-function is called when there is a need to go into the servers database. The function accesses the server
+ * makeCountyQuery-function is called when there is a need to go into the servers database. The function accesses the server
  * trough an xmlhttp-request and passes data to the server, in this case the chosen are where the frisbeegolf courses
  * are searched for.
  */
@@ -190,6 +223,10 @@ function makeCountyQuery() {
     xmlhttp.send();
 }
 
+/**
+ * makeDistanceQuery-function is called when the user wants to search tracks in a radius froom the users location.
+ * Function sends a request to the servers database and returns the tracks in the radius the user inputted.
+ */
 function makeDistanceQuery(){
     let distance = document.getElementById('distanceValue').value;
     if (distance <=0){
