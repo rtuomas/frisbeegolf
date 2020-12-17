@@ -59,6 +59,7 @@ function populateTable() {
     xmlhttp.onreadystatechange = () => {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             json = JSON.parse(xmlhttp.responseText);
+            console.log(json);
             table.innerHTML =
             `<tr>
               <th>Päivämäärä</th>

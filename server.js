@@ -18,7 +18,7 @@ const urlencodedParser = bodyParser.urlencoded({extended:false});
 const { check, validationResult } = require('express-validator');
 const url = require('url');
 
-/*
+
 //Tuomaksen yhteys
 const con = mysql.createConnection({
     host: 'localhost',
@@ -27,9 +27,8 @@ const con = mysql.createConnection({
     database: 'frisbee'
 });
 
- */
 
-
+/*
 //Joonaksen yhteys:
 const con = mysql.createConnection({
     host: "localhost",
@@ -38,6 +37,7 @@ const con = mysql.createConnection({
     database: "frisbee"
 });
 
+ */
 const query = util.promisify(con.query).bind(con);
 
 con.connect( err => {
@@ -133,7 +133,7 @@ app.post('/register', urlencodedParser,
             const username = req.body.username;
             const password = req.body.password;
             if(username&&password){
-                const sql = 'SELECT * FROM accounts WHERE username = ?';
+                const sql = 'SELECT username FROM accounts WHERE username = ?';
                 con.query(sql, [username], async (error, results1, fields) => {
                     if(results1.length>0){
                         res.render('login_register', {
@@ -179,7 +179,7 @@ app.post('/changePassword', (req, res) => {
         const sql = 'SELECT * FROM accounts WHERE username = ?';
         con.query(sql, [username], async (error, results, fields) => {
             if(results.length>0 && await bcrypt.compare(req.body.passwordCurrent, results[0].password)){
-                if(req.body.password1 === req.body.password2) {
+                if(req.body.password1 === req.body.password2) { 
                     let hashedPass = await bcrypt.hash(req.body.password1, 8);
                     const sql = "UPDATE accounts SET password = ? WHERE username = ?";
                     con.query(sql, [hashedPass, username], async (error, results, fields) => {

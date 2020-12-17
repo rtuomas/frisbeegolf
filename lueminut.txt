@@ -112,3 +112,215 @@ POST-komento ajaa taulukon tietokantaan asynkronisesti ja palauttaa results-hand
 "Tulosten tallennus onnistui!" tai "Tallentaminen epäonnistui! Ota yhteys sivuston ylläpitoon"
 
 ++//Joonaksen tekemät selitykset päättyvät//++
+________________________________________________________________________________________________________________________
+Tuomaksen kommentointi alkaa.
+
+app.get('/')
+Polku ohjaa joko kirjautumissivulle tai kotisivulle riippuen siitä onko käyttäjä kirjautunus sisälle vai ei.
+Tietokantakyselyjä ei käytetä.
+
+app.post('/login')
+Polku kirjautumiseen. Vastaanotetaan lomakkeesta käyttäjätunnus sekä salasana.
+    'SELECT * FROM accounts WHERE username = ?'
+    [
+      RowDataPacket {
+        id: 2,
+        username: 'tuomas',
+        password: '$2a$08$lsYcH18FXXwfSp97atOhAOV3GArs74lGx4eI9biKlCzQ9b94vyuZq'
+      }
+    ]
+Jos kyseisen käyttäjätunnus löytyy tietokannasta, verrataan käyttäjän antamaa salasanaan tietokannan salasanaan.
+Salasana on kryptattu tietoturvan vuoksi. Vertailu suoritetaan seuraavalla esimerkillä:
+bcrypt.compare(password, results[0].password), jossa 
+"password" = käyttäjän antama salasana ja "results[0].password" = tietokannasta saatu kryptattu salasana.
+Jos arvoksi saadaan true, käyttäjä ohjataan kotisivulle, muutoin ilmoitetaan virheestä.
+Salasanan vertailu on asynkroninen sen luonteen vuoksi.
+
+app.post('/register')
+Polun tarkoitus on rekisteröidä käyttäjätunnus. Ennen tietokantaan lisäystä suoritetaan varmistukset tietyin ehdoin:
+    [check('username').isLength({ min: 2 }).withMessage("At least 2 characters in username"),
+    check('password').isLength({ min: 2 }).withMessage("At least 2 characters in password")],
+Tämän jälkeen tarkastetaan onko antama käyttäjätunnus varattu vai ei:
+    'SELECT username FROM accounts WHERE username = ?'
+    [ RowDataPacket { 
+        username: 'tuomas' 
+      } 
+    ]
+Jos vastauksen pituus on suurempi kuin 0, on käyttäjätunnus varattu. Tällöin käyttäjälle myös ilmoitetaan: "Username already in use".
+Jos käyttäjätunnus on vapaana, kryptataan salasana ja luodaan käyttäjätunnus:
+    'INSERT INTO accounts VALUES (?,?,?)'
+    --> (Arvoina: null, username, hashedPass) (null viittaa id lukuun)
+    OkPacket {
+      fieldCount: 0,
+      affectedRows: 1,
+      insertId: 4,
+      serverStatus: 2,
+      warningCount: 0,
+      message: '',
+      protocol41: true,
+      changedRows: 0
+    }
+Otetaan vielä lopuksi kyseisen käyttäjän id luku talteen komennolla:
+    'SELECT id FROM accounts WHERE username = ?'
+    [ RowDataPacket 
+      { 
+        id: 3 
+      } 
+    ]
+Ja ohjataan käyttäjä kotisivulle kirjautuneena.
+
+app.post('/logout')
+Kirjautuu käyttäjän ulos. Nollataan session tiedot.
+Ei tietokantakyselyjä.
+
+app.post('/changePassword')
+Nimensä mukaisesti vaihtaa käyttäjän salasanan. Tarkastetaan ensin onko käyttäjä kirjautunus sisälle.
+Käyttäjän on ensin annettava nykyinen salasana ja sitten uusi salasana kahteen kertaan.
+    'SELECT * FROM accounts WHERE username = ?'
+    [
+      RowDataPacket {
+        id: 2,
+        username: 'tuomas',
+        password: '$2a$08$lsYcH18FXXwfSp97atOhAOV3GArs74lGx4eI9biKlCzQ9b94vyuZq'
+      }
+    ]
+Jos nykyinen salasana täsmää tietokannan nykyisen salasanan kanssa ja uusi salasana on annettu kahteen kertaan oikein:
+    "UPDATE accounts SET password = ? WHERE username = ?"
+    OkPacket {
+      fieldCount: 0,
+      affectedRows: 1,
+      insertId: 0,
+      serverStatus: 34,
+      warningCount: 0,
+      message: '(Rows matched: 1  Changed: 1  Warnings: 0',
+      protocol41: true,
+      changedRows: 1
+    }
+Järjestelmä ilmoittaa jos jokin ei täsmää.
+
+app.get('/home')
+Kotisivu kirjautuneelle käyttäjälle. Jos käyttäjä ei ole kirjautunus sisälle, ohjataan kirjautumissivustolle.
+Tällöin käyttäjää myös ilmoitetaan varoituksella: "You have to login first!".
+
+app.get('/results')
+Hakee kirjautuneen käyttäjän antamat ratakohtaiset tulokset tietokannasta.
+Ensin varmistetaan onko käyttäjä kirjautunus sisälle.
+    'SELECT * FROM accounts WHERE username = ?'
+Tietojen haku voi kestää hetken, minkä johdosta haku on suoritettu asynkronisesti sekä varmistettu virheiden ilmaantuessa try-catch -lohkolla.
+    'SELECT * FROM results LEFT JOIN locations ON results.location_id=locations.location_id WHERE account_id=('+userID+');'
+    [ RowDataPacket {
+        result_id: 3,
+        location_id: 2605,
+        account_id: 2,
+        play_date: 2020-12-16T22:00:00.000Z,
+        c1: 4,
+        par1: 3,
+        c2: 5,
+        par2: 4,
+        c3: 4,
+        par3: 4,
+        c4: 4,
+        par4: 3,
+        c5: 4,
+        par5: 3,
+        c6: 0,
+        par6: 0,
+        c7: 0,
+        par7: 0,
+        c8: 0,
+        par8: 0,
+        c9: 0,
+        par9: 0,
+        c10: 0,
+        par10: 0,
+        c11: 0,
+        par11: 0,
+        c12: 0,
+        par12: 0,
+        c13: 0,
+        par13: 0,
+        c14: 0,
+        par14: 0,
+        c15: 0,
+        par15: 0,
+        c16: 0,
+        par16: 0,
+        c17: 0,
+        par17: 0,
+        c18: 0,
+        par18: 0,
+        location_area: 'Uusimaa',
+        location_city: 'Helsinki',
+        location_name: 'Talin frisbeegolfpuisto',
+        location_address: 'Talinhuippu (Takkatie), 00360 Helsinki',
+        latitude: 60.21315136,
+        longitude: 24.846823668
+      }
+    ]
+Results ja accounts taulut yhdistetään jotta saadaan liitettyä käyttäjän id results taulun käyttäjän id:seen.
+
+________________________________________________________________________________________________________________________
+
+login.js tiedostosta löytyy yksi funktio jonka ilmeinen tarkoitus on ilmoittaa onko käyttäjä asettanut rekisteröinnin
+yhteydessä riittävästi merkkejä (Minimi 2).
+
+homepage.js tiedostossa asetetaan kahden modalin (results ja settings valikot) käyttäytyminen.
+Funktion populateTable() tarkoitus on täyttää taulukko kirjautuneen käyttäjän suorittamilla ratatuloksilla.
+Tiedot haetaan tietokannasta joka muutetaan json muotoon:
+    (2) [{…}, {…}]
+    0: {result_id: 1, location_id: 2643, account_id: 2, play_date: "2020-12-14T22:00:00.000Z", c1: 4, …}
+    1: {result_id: 3, location_id: 2605, account_id: 2, play_date: "2020-12-16T22:00:00.000Z", c1: 4, …}
+    length: 2
+    __proto__: Array(0)
+Tiedoilla taulu täytetään.
+Alla vielä esimerkki yhden tuloksen muodosta:
+    account_id: 2
+    c1: 4
+    c2: 2
+    c3: 0
+    c4: 0
+    c5: 0
+    c6: 0
+    c7: 0
+    c8: 0
+    c9: 0
+    c10: 0
+    c11: 0
+    c12: 0
+    c13: 0
+    c14: 0
+    c15: 0
+    c16: 0
+    c17: 0
+    c18: 0
+    latitude: 60.989927955
+    location_address: "Harjuntie 407, Vampula, Huittinen"
+    location_area: "Satakunta"
+    location_city: "Säkylä"
+    location_id: 2643
+    location_name: "Vampulan frisbeegolfrata"
+    longitude: 22.611408234
+    par1: 4
+    par2: 3
+    par3: 0
+    par4: 0
+    par5: 0
+    par6: 0
+    par7: 0
+    par8: 0
+    par9: 0
+    par10: 0
+    par11: 0
+    par12: 0
+    par13: 0
+    par14: 0
+    par15: 0
+    par16: 0
+    par17: 0
+    par18: 0
+    play_date: "2020-12-14T22:00:00.000Z"
+    result_id: 1
+    __proto__: Object
+
+Tuomaksen kommentointi päättyy.
+________________________________________________________________________________________________________________________________
