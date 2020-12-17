@@ -2,7 +2,7 @@
 /**
  * @author Tuomas Rajala
  * @author Joonas Soininen
- * @version 3.0
+ * @version 3.1
  *
  */
 const mysql = require('mysql');
@@ -18,7 +18,7 @@ const urlencodedParser = bodyParser.urlencoded({extended:false});
 const { check, validationResult } = require('express-validator');
 const url = require('url');
 
-
+/*
 //Tuomaksen yhteys
 const con = mysql.createConnection({
     host: 'localhost',
@@ -27,8 +27,10 @@ const con = mysql.createConnection({
     database: 'frisbee'
 });
 
+ */
 
-/*
+
+
 //Joonaksen yhteys:
 const con = mysql.createConnection({
     host: "localhost",
@@ -37,7 +39,7 @@ const con = mysql.createConnection({
     database: "frisbee"
 });
 
- */
+
 const query = util.promisify(con.query).bind(con);
 
 con.connect( err => {
@@ -228,7 +230,7 @@ app.get('/home', (req, res) => {
 app.get('/results', (req, res) => {
     if (req.session.loggedin) {
         const username = req.session.username;
-        let sql = 'SELECT * FROM accounts WHERE username = ?';
+        let sql = 'SELECT id FROM accounts WHERE username = ?';
         (async () => {
             try {
                 const result2 = await query(sql, [username]);
@@ -264,7 +266,7 @@ app.get('/nouda/maakunta', function (req, res) {
             const rows = await query(sql,[area.area]);
             const string = JSON.stringify(rows);
             const alteredResult = '{"numOfRows":'+rows.length+',"rows":'+string+'}';
-            res.set('Access-Control-Allow-Origin', '*'); //Ehkä tietoturvariski jos arvona *
+            res.set('Access-Control-Allow-Origin', '*');
             res.send(alteredResult);
         }
         catch (err) {
@@ -293,7 +295,7 @@ app.get('/nouda/distance', function (req, res) {
             const rows = await query(sql);
             const string = JSON.stringify(rows);
             const alteredResult = '{"numOfRows":'+rows.length+',"rows":'+string+'}';
-            res.set('Access-Control-Allow-Origin', '*'); //Ehkä tietoturvariski jos arvona *
+            res.set('Access-Control-Allow-Origin', '*');
             res.send(alteredResult);
         }
         catch (err) {
@@ -311,7 +313,7 @@ app.get('/nouda/distance', function (req, res) {
 app.get("/user/username", function (req, res){
     if (req.session.loggedin) {
         const username = req.session.username;
-        const sql = 'SELECT * FROM accounts WHERE username = ?';
+        const sql = 'SELECT username, id FROM accounts WHERE username = ?';
         con.query(sql, [username], async (error, results, fields) => {
             const string={id: results[0].id, user: results[0].username};
             res.send(string);

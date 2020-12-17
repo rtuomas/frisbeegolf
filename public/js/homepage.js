@@ -146,8 +146,6 @@ function showMore(resultID){
     tr.innerHTML='<td><input onclick="populateTable()" type="button" value="Takaisin" id="Takaisin"></td>';
     table.appendChild(tr);
     for (let i=0;i<resultsAllCourses.length;i++){
-        //console.log(resultsAllCourses[i].trackID);
-        //console.log(resultsAllCourses[i].trackName);
         if (resultsAllCourses[i].resultID===resultID){
             const tr = document.createElement('tr');
             tr.innerHTML='<td>'+resultsAllCourses[i].trackName+'</td>'+
@@ -158,7 +156,6 @@ function showMore(resultID){
             for(let j=1;j<19;j++){
                 if(resultsAllCourses[i][j].course!==0){
                     const tr = document.createElement('tr');
-                    //console.log("Väylä "+j+" heitot: "+resultsAllCourses[i][j].course+" PAR: "+resultsAllCourses[i][j].par);
                     const throws = resultsAllCourses[i][j].course;
                     const par = resultsAllCourses[i][j].par;
                     const equals = throws-par;
@@ -167,8 +164,6 @@ function showMore(resultID){
                     '<td>'+resultsAllCourses[i][j].course+'</td>'+
                         '<td>'+equals+'</td>';
                     table.appendChild(tr);
-                    //console.log("Väylä "+j+" PAR: "+resultsAllCourses[i][j].par);
-
                }
             }
             break;

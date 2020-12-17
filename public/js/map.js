@@ -1,7 +1,7 @@
 'use strict';
 /**
  * @author Joonas Soininen
- * @version 2.6
+ * @version 2.7
  *
  */
 
@@ -175,16 +175,11 @@ function makeCountyQuery() {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             json = JSON.parse(xmlhttp.responseText);
-            //console.log("Tietokannasta haettu ja map.js lähetetty data:");
-            //console.log(json);
             for (let i=0; i<json.rows.length; i++){
-                //console.log(json.rows[i].latitude+' '+json.rows[i].longitude);
-
                 if (json.rows[i].latitude!==0&&json.rows[i].longitude!==0){
                     crd = {latitude: json.rows[i].latitude, longitude: json.rows[i].longitude};
                     trackName = json.rows[i].location_name;
                     trackID = json.rows[i].location_id;
-
                     addTrack(crd, trackName, trackID);
                 }
             }
