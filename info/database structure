@@ -1,0 +1,66 @@
+create database frisbee;
+use frisbee;
+
+CREATE TABLE accounts (
+id INT NOT NULL AUTO_INCREMENT,
+username varchar(255) NOT NULL,
+password varchar(255) NOT NULL,
+PRIMARY KEY (id)
+);
+
+CREATE TABLE Locations
+(
+location_id INT NOT NULL,
+location_area varchar(255),
+location_city varchar(255),
+location_name varchar(255),
+location_address varchar(255),
+latitude Decimal(12,9),
+longitude Decimal(12,9),
+PRIMARY KEY (location_id)
+);
+
+CREATE TABLE results
+(
+result_id int NOT NULL AUTO_INCREMENT,
+location_id int NOT NULL,
+account_id int NOT NULL,
+play_date Date,
+c1 int,
+par1 int,
+c2 int,
+par2 int,
+c3 int,
+par3 int,
+c4 int,
+par4 int,
+c5 int,
+par5 int,
+c6 int,
+par6 int,
+c7 int,
+par7 int,
+c8 int,
+par8 int,
+c9 int,
+par9 int,
+c10 int,
+par10 int,
+c11 int,
+par11 int,
+c12 int,
+par12 int,
+c13 int,
+par13 int,
+c14 int,
+par14 int,
+c15 int,
+par15 int,
+c16 int,
+par16 int,
+c17 int,
+par17 int,
+c18 int,
+par18 int,
+PRIMARY KEY (result_id, location_id, account_id)
+);

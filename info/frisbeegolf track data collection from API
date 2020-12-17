@@ -1,0 +1,39 @@
+fetch('https://discgolfmetrix.com/api.php?content=courses_list&country_code=FI').then(response=>response.json()).then(vaylat=>{
+    con.connect(function(err) {
+        if (err) throw err;
+        console.log("Connected.")
+        const sql = "INSERT INTO Locations VALUES (?, ?, ?, ?, ?, ?, ?)";
+        con.query("DELETE FROM Locations", function (err) {
+            if (err) console.log(err);
+        })
+		
+    for (let x=0; x<vaylat.courses.length;x++){
+        if (vaylat.courses[x].Type === '1' && vaylat.courses[x].Enddate == null ){
+            let id = vaylat.courses[x].ID;
+            let area = vaylat.courses[x].Area;
+            let city = vaylat.courses[x].City;
+            let name = vaylat.courses[x].Name;
+            if(vaylat.courses[x].Location===null){
+                location='';
+            } else {
+                location = vaylat.courses[x].Location;
+            }
+            if (vaylat.courses[x].X===''){
+                latitude = 0.0;
+            } else {
+                latitude = vaylat.courses[x].X;
+            }
+            if (vaylat.courses[x].Y===''){
+                longitude= 0.0;
+            } else {
+                longitude = vaylat.courses[x].Y;
+            }
+            con.query(sql, [id, area, city, name, location, latitude, longitude], function (err) {
+                if (err) console.log(x + ", " + err);
+            })
+        }
+    }
+    //con.end();
+})
+
+}).catch(error=>console.log(error))
