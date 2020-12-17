@@ -1,4 +1,9 @@
 'use strict';
+/**
+ * @author Tuomas Rajala
+ * @version 2.0
+ *
+ */
 
 /**
  * This event listener is used for the login/register forms. It informs whether password/username are 

@@ -1,3 +1,10 @@
+'use strict';
+/**
+ * @author Tuomas Rajala
+ * @version 2.1
+ *
+ */
+
 let table = document.getElementById('table');
 // Get the modal
 const modal = document.getElementById("myModal");

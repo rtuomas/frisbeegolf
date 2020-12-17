@@ -22,8 +22,8 @@ const url = require('url');
 //Tuomaksen yhteys
 const con = mysql.createConnection({
     host: 'localhost',
-    user: 'root',
-    password: 'rootPass',
+    user: 'x',
+    password: 'x',
     database: 'frisbee'
 });
 
